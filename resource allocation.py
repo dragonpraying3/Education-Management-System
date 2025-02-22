@@ -1,4 +1,3 @@
-
 def open_resource():
     resources=[]
     with open("resource.txt",'r')as gFile:
@@ -85,11 +84,11 @@ def resource_allocation():
             allocate_resource=input("Enter the resource name need to allocate:").capitalize()
             found_resource=False
             for resource in resources:
-                if resource['Resource']==allocate_resource:
+                if resource['Classroom']==classroom and resource['Resource']==allocate_resource:
                     found_resource=True
                     break
             if not found_resource:
-                print("Resource not found\n")
+                print(f"Resource '{allocate_resource}' not found in {classroom}. Please enter a valid resource.\n")
                 continue
             break
 
@@ -99,7 +98,7 @@ def resource_allocation():
                 if quantity <= 0:
                     raise ValueError("Quantity must be greater than 0!")
                 break  # Exit loop if valid
-            except ValueError as e:
+            except ValueError as e: #e is the error that made by the user
                 print(f"Invalid input: {e}")
 
         done_allocate=False
