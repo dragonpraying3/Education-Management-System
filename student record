@@ -5,6 +5,7 @@ def open_students():
     with open("students.txt", 'r') as tFile:
         for line in tFile:
             line=line.rstrip().split(",") #split each line become a list and remove whitespace
+            #set the limit of the append block inside the list
             while len(line)<9:
                 line.append("")
             #store each list in a dictionary
@@ -23,7 +24,7 @@ def open_students():
     return students #return the list containing student dictionary
 
 def update_student_status(pupil_id,new_status):
-    students=open_students() #read students from students.txt
+    students=open_students() #read students list from students.txt
     update=False #check if the update is success
 
     for student in students:
@@ -37,9 +38,9 @@ def update_student_status(pupil_id,new_status):
         # update the new_status to students.txt
         with open("students.txt", 'w')as tFile:
             for student in students:
-                #combine the elements of a list in file into single string separate by ','
+                #combine the elements of a dictionary in file into single string separate by ','
                 tFile.write(",".join(student.values()) + "\n")
-                print(f"Student ID:{student['Student ID']}\t\tStudent Name:{student['Name']}\t\tContact:{student['Contact']}\t\tGender:{student['Gender']}\t\tCourse status:{student['Student Status']}")
+                print(f"Student ID:{student['Student ID']}\t\tStudent Name:{student['Name']}\t\tContact:{student['Contact']}\t\tGender:{student['Gender']}\t\tStudent status:{student['Student Status']}")
     else:
         print("Something wrong")
 
@@ -82,6 +83,7 @@ def register_student():
 
             # append new student to the students.txt file
             with open("students.txt", 'a') as tFile:
+                #convert the list into single string
                 tFile.write(",".join(new_student)+"\n")
 
             print("\nRegister successful!\n")
