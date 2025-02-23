@@ -11,12 +11,11 @@ def open_course():
                 "Course ID": line[0],
                 "Course Name": line[1],
                 "Instructor": line[2],
-                "Contact": line[3],
-                "Assignment": line[4],
-                "Lecture Notes": line[5],
-                "Announcement": line[6],
-                "Overall Attendance": line[7],
-                "Lesson Plan": line[8]
+                "Assignment": line[3],
+                "Lecture Notes": line[4],
+                "Announcement": line[5],
+                "Overall Attendance": line[6],
+                "Lesson Plan": line[7]
             }
             courses.append(course)  # add student dictionary to the list
     return courses
