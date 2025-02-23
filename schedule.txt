@@ -1,0 +1,5 @@
+ISCC001,Monday,10:00-12:00,Mr Hulu,A-01-03
+ISCC001,Tuesday,8:30-10:30,Mr Hulu,A-02-01
+DBM001,Friday,14:30-16:30,Miss Christina,B-03-02
+PWP001,Monday, ,Mr Thong,B-04-01
+PWP001,Monday, ,Mr Thong,B-04-01
