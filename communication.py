@@ -1,5 +1,3 @@
-
-
 def open_mailbox():
     mailbox=[] #create an empty list to store data
     with open("mail.txt", 'r')as message:
