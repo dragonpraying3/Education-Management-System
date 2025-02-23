@@ -1,4 +1,4 @@
-TP800000,Jamel,jamel@gmail.com,011482063,012856021,Male,Transfer,RM5000,done
-TP800001,Jackson,jackson@gmail.com,011482063,011982371,Female,Active,Digital Thinking, ,
+TP800000,Jamel,jamel@gmail.com,011482063,012856021,Male,Transfer,RM5000,done payment
+TP800001,Jackson,jackson@gmail.com,011482063,011982371,Female,Active,RM6000,without payment
 TP800002,James,james@gmail.com,011119384,016789128,Male,Active,Operating System , ,
 TP662076,Low Jin Ming, ,820193812093, ,Male,Withdraw, ,
