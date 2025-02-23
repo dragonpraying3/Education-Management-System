@@ -1,4 +1,4 @@
-
+# student
 def open_course():
     courses = []  # create an empty list to store student data
     with open("course.txt", 'r') as tFile:
