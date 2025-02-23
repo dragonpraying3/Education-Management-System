@@ -44,6 +44,29 @@ def open_students():
             students.append(student) #add student dictionary to the list
     return students #return the list containing student dictionary
 
+def open_enrolments():
+    enrolments = []  # create an empty list to store student data
+    with open("enrolments.txt", 'r') as tFile:
+        for line in tFile:
+            line = line.rstrip().split(",")  # split each line become a list and remove whitespace
+            while len(line) < 3:
+                line.append("")
+            # store each list in a dictionary
+            enrolment = {
+                "Student ID": line[0],
+                "Course ID": line[1]
+            }
+            enrolments.append(enrolment) # add student dictionary to the list
+    return enrolments
+
+def update_enrolments(enrolled):
+    with open("enrolments.txt", "w") as file:
+        for enrol in enrolled:
+            file.write(",".join([
+                enrol["Student ID"],
+                enrol["Course ID"],
+            ]) + "\n")
+
 def course_enrolment_menu():
     while True:
         print("\n-------------------------------------")
@@ -88,6 +111,7 @@ def browse_course():
 def enrol_in_course():
     students = open_students()
     courses = open_course()
+    enrolled = open_enrolments()
 
     tp_number = input("\nEnter your TP number: ").upper()
 
@@ -101,21 +125,21 @@ def enrol_in_course():
         print("student ID founded")
 
         course_id = input("Enter the Course ID you want to enrol in: ").upper()
+        course_found = None
         for course in courses:
             if course["Course ID"] == course_id:
                 course_found = course
                 break # stop when course id found
 
         if course_found:
-            with open("enrolments.txt","r") as rfile:
-                for line in rfile:
-                    tp_numbers, course_ids = line.strip().split(",")
-                    if tp_number == tp_numbers and course_ids == course_id:
-                        input(f"Student {tp_number} is already enrolled in {course_id}.")
-                        return
+            for enrol in enrolled:
+                if enrol["Student ID"] == tp_number and enrol["Course ID"] == course_id:
+                    input(f"Student {tp_number} is already enrolled in {course_id}.")
+                    return
 
-            with open("enrolments.txt","a") as afile:
-                afile.write(f"{tp_number},{course_id}\n")
+            enrolled.append({"Student ID": tp_number, "Course ID": course_id})
+            update_enrolments(enrolled)
+
             input(f"Student {tp_number} enrolled in {course_id} successfully!")
 
         else:
@@ -124,7 +148,8 @@ def enrol_in_course():
         print("Student ID not found")
 
 def view_enrol_course():
-    students =open_students()
+    students = open_students()
+    enrolments = open_enrolments()
     tp_number = input("\nEnter your TP number: ").upper()
 
     student_found = None
@@ -133,26 +158,22 @@ def view_enrol_course():
             student_found = student
             break  # stop when found student id
 
-    enrolled_course = []
-
     if student_found:
-        with open("enrolments.txt","r") as rfile:
-            for line in rfile:
-                student_id, course_id = line.strip().split(",")
-                if student_id == tp_number:
-                    enrolled_course.append(course_id)
+        enrolled_course = []
+        for enrolment in enrolments:
+            if enrolment["Student ID"] == tp_number:
+                enrolled_course.append(enrolment["Course ID"])
 
         if enrolled_course:
             print(f"\nCourses enrolled by {tp_number}:")
             for course_id in enrolled_course:
                 print(f"  - {course_id}")
-            input("\npress enter to continue...")
 
         else:
             print(f"Student {tp_number} is not enrolled in any courses.")
     else:
         print("Student ID not found.")
-
+    input("\npress enter to continue...")
 
 
 
