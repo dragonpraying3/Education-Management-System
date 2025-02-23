@@ -1,4 +1,4 @@
-
+#HI
 def open_students():
     students=[] #create an empty list to store student data
     with open("students.txt", 'r') as tFile:
