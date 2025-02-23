@@ -63,7 +63,7 @@ def course_enrolment_menu():
                 enrol_in_course()
             elif opt == 3:
                 view_enrol_course()
-            elif opt == 3:
+            elif opt == 4:
                 break
             else:
                 print("Invalid choice")
