@@ -54,13 +54,11 @@ def search_by_resource():
     resources=open_resource()
     while True:
         resource_enter=input("Enter the resource name:").capitalize()
-        found=False
-
+        found=False #track if the resource is found
         for resource in resources:
             if resource['Resource']==resource_enter:
                 print(f"The {resource_enter} is in {resource['Classroom']} with quantity {resource['Number']}")
-                found=True
-
+                found=True #mark as found
         if not found:
             print("Sorry,classroom entered is not found")
         if not continue_searching():
@@ -157,4 +155,4 @@ def resource_allocation_menu():
         except ValueError:
             print("Invalid input! Only integer 1-3 is allowed.")
 
-resource_allocation_menu()
+# resource_allocation_menu()
