@@ -173,4 +173,4 @@ def event_menu():
             print("Invalid input! Only integer 1-3 is allowed.")
 
 
-event_menu()
+# event_menu()
