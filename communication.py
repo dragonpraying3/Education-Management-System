@@ -42,9 +42,9 @@ def reply_mailbox():
                 found = False
                 for mail in mailboxes:
                     if mail['Name']==reply and mail['Role'].upper()==reply_sender:
-                        if mail['Role'].upper() == "PARENT":
-                            from student_record import open_students
-                            students = open_students()
+                        if mail['Role'].upper() == "PARENT": #if role entered is parent enter student financial page
+                            from student_record import open_students #import open students.txt function from student_record.py
+                            students = open_students() #call the function
 
                             print("\n========== Student Fee Details ==========")
                             for student in students:
@@ -53,9 +53,6 @@ def reply_mailbox():
                                 print(f"Tuition Fees: {student['Tuition Fees']}")
                                 print(f"Payment: {student['Payment']}")
                                 print("-" * 40)
-                            if not students:
-                                print("No student records found!")
-                                return
 
                         reply_text=input("Enter your reply: ").strip()
                         mail['Reply']=reply_text
@@ -69,7 +66,7 @@ def reply_mailbox():
                 #update mailbox with the reply content
                 with open("mail.txt",'w')as message:
                     for mail in mailboxes:
-                        message.write(",".join([mail['Name'], mail['Role'], mail['Message'], mail['Reply']]) + "\n")
+                        message.write(",".join(mail.values())+"\n")
 
                 #call update function to display the mailbox after updated
                 update_mailbox()
@@ -107,4 +104,4 @@ def communication_menu():
         except ValueError:
             print("Invalid input! Only integer 1-3 is allowed.")
 
-communication_menu()
+# communication_menu()
