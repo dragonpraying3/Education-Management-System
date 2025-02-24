@@ -161,4 +161,4 @@ def timetable_menu():
         except ValueError:
             print("Invalid input! Only integer 1-3 is allowed.")
 
-timetable_menu()
+# timetable_menu()
