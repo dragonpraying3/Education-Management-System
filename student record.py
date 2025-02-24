@@ -2,30 +2,26 @@ import random
 
 def open_students():
     students=[] #create an empty list to store student data
-    try:
-        with open("students.txt", 'r') as tFile:
-            for line in tFile:
-                line=line.rstrip().split(",") #split each line become a list and remove whitespace
-                #set the limit of the append block inside the list
-                while len(line)<9:
-                    line.append("")
-                #store each list in a dictionary
-                student = {
-                    "Student ID": line[0],
-                    "Name": line[1],
-                    "Email": line[2],
-                    "Contact": line[3],
-                    "Emergency Contact": line[4],
-                    "Gender":line[5],
-                    "Student Status":line[6],
-                    "Tuition Fees":line[7],
-                    "Payment":line[8]
-                }
-                students.append(student) #add student dictionary to the list
-        return students #return the list containing student dictionary
-    except FileNotFoundError:
-        print("Error: students.txt not found. Returning empty list")
-        return []
+    with open("students.txt", 'r') as tFile:
+        for line in tFile:
+            line=line.rstrip().split(",") #split each line become a list and remove whitespace
+            #set the limit of the append block inside the list
+            while len(line)<9:
+                line.append("")
+            #store each list in a dictionary
+            student = {
+                "Student ID": line[0],
+                "Name": line[1],
+                "Email": line[2],
+                "Contact": line[3],
+                "Emergency Contact": line[4],
+                "Gender":line[5],
+                "Student Status":line[6],
+                "Tuition Fees":line[7],
+                "Payment":line[8]
+            }
+            students.append(student) #add student dictionary to the list
+    return students #return the list containing student dictionary
 
 def update_student_status(pupil_id,new_status):
     students=open_students() #read students list from students.txt
@@ -179,6 +175,6 @@ def student_record_menu():
             else:
                 print("Invalid choice!")
         except ValueError:
-            (print("Invalid input! Only integer 1-3 is allowed."))
+            print("Invalid input! Only integer 1-3 is allowed.")
 
 # student_record_menu()
