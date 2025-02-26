@@ -10,7 +10,7 @@ def open_students():
                 line.append("")
             #store each list in a dictionary
             student = {
-                "Student IDs": line[0],
+                "Student IDss": line[0],
                 "Name": line[1],
                 "Email": line[2],
                 "Contact": line[3],
