@@ -6,7 +6,7 @@ def convert_time(time): #convert time format for easy comparison
 def open_timetable():
     schedule=[]
     try:
-        with open("schedule.txt",'r')as hFile:
+        with open("assets/schedule.txt",'r')as hFile:
             for row in hFile:
                 row=row.rstrip().split(",")
                 item={
