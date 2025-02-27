@@ -2,6 +2,7 @@ import upd_info
 import course_enrol
 import material_access
 import grade_tracking
+import feedback_submission
 
 def student_menu():
     while True:
@@ -26,6 +27,8 @@ def student_menu():
             material_access.course_material_access()
         elif opt == 4:
             grade_tracking.grades_menu()
+        elif opt == 5:
+            feedback_submission.feedback_menu()
         elif opt == 6:
             print("Exiting")
             break
