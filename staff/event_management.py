@@ -2,23 +2,30 @@ from datetime import datetime
 
 def open_event():
     events=[]
-    with open("event.txt",'r')as vFile:
-        for line in vFile:
-            line=line.rstrip().split(",")
-            #store each list in a dictionary with index label
-            program={
-                "Category":line[0],
-                "Title":line[1],
-                "Date":line[2],
-                "Duration":line[3],
-                "Venue":line[4],
-                "Leader":line[5]
-            }
-            events.append(program) #add each event program to the events list
-        return events
+    try:
+        with open("event.txt",'r')as vFile:
+            for line in vFile:
+                line=line.rstrip().split(",")#remove whitespace and split each line become a list
+                #store each list in a dictionary with index label
+                program={
+                    "Category":line[0],
+                    "Title":line[1],
+                    "Date":line[2],
+                    "Duration":line[3],
+                    "Venue":line[4],
+                    "Leader":line[5]
+                }
+                events.append(program) #add each event program to the events list
+            return events
+    except FileNotFoundError:
+        print("Warning: 'event.txt' not found. ")
+    return None #return an empty list is file is missing
 
 def update_event():
     events=open_event()
+    if events is None:
+        return
+
     with open("event.txt", 'w') as vFile:
         index = 1
         for event in events:
@@ -30,12 +37,16 @@ def update_event():
             print("-" * 150)
 
 def register_event():
+    events = open_event()
+    if events is None:
+        return
+
     while True:
         print("-" * 50, "REGISTER NEW EVENT", "-" * 50)
 
         while True:
             category=input("Enter event category(Academic/Extracurricular/Conference/Seminar):").capitalize()
-            if category not in ["Academic","Extracurricular","Conference","Seminar"]:
+            if category not in ["Academic","Extracurricular","Conference","Seminar"]: #validate the input of user is within the listed category
                 print("Entered category is not found.\n")
                 continue
             else:
@@ -44,7 +55,7 @@ def register_event():
         title=input("Enter event title:").title().strip()
         while True:
             try:
-                date=input("Enter event date (dd/mm/yyyy):").strip()
+                date=input("Enter event date (dd/mm/yyyy):").strip() #validate the date format
                 datetime.strptime(date,"%d/%m/%Y")
                 break
             except ValueError:
@@ -69,6 +80,8 @@ def register_event():
 
 def manage_event():
     events=open_event()
+    if events is None:
+        return
     while True:
         print("")
         print("-" * 50, "Action Page", "-" * 50)
@@ -79,7 +92,6 @@ def manage_event():
         try:
             selection = int(input("\nPlease Enter your choice:"))
             print("-" * 50, "DELETING EVENT PAGE", "-" * 50)
-            #want apply try except or not
             if selection == 1:
                 update_event()
                 line_number=int(input("Enter the number of event need to be delete:"))
@@ -105,7 +117,7 @@ def manage_event():
                         num = int(input("Enter the number of the event edit: "))
                         if 1 <= num <= len(events):
                             event=events[num-1] #get the selected event dictionary from list
-                            part = input("Please enter the part of the event to edit:").title()
+                            part = input("Please enter the part of the event to edit(Title/Date/Venue/Duration/Leader):").title()
                             if part not in event:
                                 print("The part you enter is not found in the event list. Please enter again.\n")
                                 continue
@@ -121,7 +133,7 @@ def manage_event():
                                     print("Invalid date format! Use DD/MM/YYYY.")
                                     continue
 
-                            event[part] = edition
+                            event[part] = edition #change the part to edition entered
                             with open("event.txt",'w')as vFile:
                                 for event in events:
                                     vFile.write(",".join(event.values())+"\n")
