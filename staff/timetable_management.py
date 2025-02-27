@@ -1,14 +1,18 @@
 from datetime import datetime
 
-def convert_time(time): #convert time format for easy comparison
-    return datetime.strptime(time,'%H:%M')
+def convert_time(time):  # Convert time format for easy comparison
+    try:
+        return datetime.strptime(time, '%H:%M')  # Validate time format
+    except ValueError:
+        raise ValueError("Invalid time format. Please enter in HH:MM format.")
 
 def open_timetable():
-    schedule=[]
-    try:
-        with open("assets/schedule.txt",'r')as hFile:
+    schedule=[] #empty list to store timetable
+    try: #handle file not found error
+        with open("schedule.txt",'r')as hFile:
             for row in hFile:
-                row=row.rstrip().split(",")
+                row=row.rstrip().split(",")#remove whitespace and split each line become a list
+                #store each list in a dictionary
                 item={
                     "Course ID":row[0],
                     "Day":row[1],
@@ -17,9 +21,10 @@ def open_timetable():
                     "Venue":row[4]
                 }
                 schedule.append(item)
-            return schedule
+            return schedule #return dictionary to the schedule list
     except FileNotFoundError:
-        raise FileNotFoundError("Error: schedule.txt not found.")
+        print("Warning : schedule.txt not found.")
+        return None
 
 def open_teacher():
     teachers=[]
@@ -36,10 +41,13 @@ def open_teacher():
                 teachers.append(item)
             return teachers
     except FileNotFoundError:
-        raise FileNotFoundError("Error: teachers.txt not found. Returning empty list")
+        print("Warning: teachers.txt not found.")
+        return None
 
 def update_timetable():
     schedule=open_timetable()
+    if schedule is None: #if file not found ,return to menu
+        return
     print()
     print("-"*60,"Current Timetable","-"*60)
     index=1
@@ -52,17 +60,21 @@ def update_timetable():
 
 def update_teachers():
     teachers=open_teacher()
+    if teachers is None:
+        return
     print()
     print("-" * 40, "Instructors Official Hours", "-" * 40)
     with open("teachers.txt", 'w') as instructor:
         for item in teachers:
-            instructor.write(",".join(item.values()) + "\n")
+            instructor.write(",".join(item.values()) + "\n") #convert dictionary into comma-separated string and write to file
             print(f"Course ID:{item['Course ID']}\t\tDay:{item['Day']}\t\tInstructor:{item['Instructor']}\t\tOffice Hours:{item['Office Hours']}")
             print("-" * 100)
 
 def edit_schedule():
     schedule=open_timetable()
     teachers=open_teacher()
+    if schedule is None or teachers is None:
+        return
     while True:
         print("-"*40,"Action Menu","-"*40)
         print("1. Scheduling Class")
@@ -77,13 +89,23 @@ def edit_schedule():
                 if 1<= bil<=len(schedule):
                     real_bil = bil - 1
                     if schedule[real_bil]['Time Slot'] == " ":
-                        scheduling=input("Enter the time slot of the class schedule in 24 hours method (eg. 12.00-14.00):")
-                        schedule[real_bil]['Time Slot']=scheduling
+                        scheduling=input("Enter the time slot of the class schedule in 24 hours method (eg. 12:00-14:00):")
 
+                        try: #valid the time format is HH:MM-HH:MM format
+                            start_time, end_time = scheduling.split("-")
+                            # Validate time format
+                            start_time = convert_time(start_time)
+                            end_time = convert_time(end_time)
+                            if start_time >= end_time:
+                                print("Error: Start time must be before end time.")
+                                continue
+                        except ValueError:
+                            print("Invalid time format. Please enter in HH:MM-HH:MM format.")
+                            continue
+                        schedule[real_bil]['Time Slot']=scheduling #update the time slot in schedule
                         with open("schedule.txt", 'w') as hFile:
                             for item in schedule:  # write the entire schedule back to the schedule.txt
-                                hFile.write(",".join(item.values()) + "\n")
-
+                                hFile.write(",".join(item.values()) + "\n") #convert dictionary to comma-separated string
                     else:
                         print("The schedule selected already have time slot. Please select Rescheduling Class if wanted.\n")
                         continue
@@ -95,38 +117,47 @@ def edit_schedule():
                 print("")
                 update_teachers()
                 bil = int(input("Enter line number of the timetable need to reschedule:"))
-                if 1 <= bil <= len(schedule):
+                if 1 <= bil <= len(schedule): #validate the number of line of the timetable
                     real_bil = bil - 1
                     selected_class=schedule[real_bil]
-                    instructor_name=selected_class['Instructor']
-                    class_day=selected_class['Day']
+                    instructor_name=selected_class['Instructor'].strip()
+                    class_day=selected_class['Day'].strip()
 
                     found=False
                     for teacher in teachers:
-                        if teacher['Instructor']==instructor_name and teacher['Day']==class_day:
-                            time_start,time_end=teacher['Office Hours'].split("-")
-                            new_start, new_end = input("Enter new time (HH:MM-HH:MM): ").split("-")
+                        if teacher['Instructor'].strip()==instructor_name and teacher['Day'].strip()==class_day:
+                            try:
+                                time_start, time_end = teacher['Office Hours'].split("-")
+                                new_start, new_end = input("Enter new time (HH:MM-HH:MM): ").split("-")
 
-                            if convert_time(time_start)<=convert_time(new_start)<=convert_time(time_end) and convert_time(time_start)<=convert_time(new_end)<=convert_time(time_end):
-                                schedule[real_bil]['Time Slot']=f"{new_start}-{new_end}"
-                                print("Reschedule successful!")
+                                # Validate new time format
+                                new_start = convert_time(new_start)
+                                new_end = convert_time(new_end)
 
+                                # Convert office hours to datetime for comparison
+                                time_start = convert_time(time_start)
+                                time_end = convert_time(time_end)
 
-                                with open("schedule.txt", 'w') as hFile:
-                                    for item in schedule:  # write the entire schedule back to the schedule.txt
-                                        hFile.write(",".join(item.values()) + "\n")
-                                update_timetable()
-                                found=True
-                                break
-                            else:
-                                print("Error:New time slot is outside the instructor's available hours.")
-                                break
-                        else:
-                            print("The instructor not found.\n")
+                                if time_start <= new_start <= time_end and time_start <= new_end <= time_end:
+                                    schedule[real_bil]['Time Slot']=f"{new_start}-{new_end}"
+                                    print("Reschedule successful!")
+
+                                    with open("schedule.txt", 'w') as hFile:
+                                        for item in schedule:  # write the entire schedule back to the schedule.txt
+                                            hFile.write(",".join(item.values()) + "\n")
+                                    update_timetable()
+                                    found=True
+                                    break
+                                else:
+                                    print("Error:New time slot is outside the instructor's available hours.")
+                                    found=True
+                                    break
+                            except ValueError:
+                                print("Invalid time format. Please enter in HH:MM-HH:MM format.")
                     if not found:
-                        print("The line number enter is not in the list.")
+                        print("Error: Instructor not found or office hours do not match.")
                 else:
-                    print("The line number was not in the timetable.")
+                    print("Invalid line number.")
             elif option==3:
                 print("Exiting the page...")
                 break
