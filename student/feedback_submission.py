@@ -47,15 +47,18 @@ def feedback_menu():
         print("1. Submit a feedback")
         print("2. Exit")
 
-        opt = int(input("Select an option: "))
+        try:
+            opt = int(input("Select an option: "))
 
-        if opt == 1:
-            submit_feedback()
-        elif opt ==2:
-            break
-        else:
+            if opt == 1:
+                submit_feedback()
+            elif opt ==2:
+                break
+            else:
+                print("Invalid choice, please enter a valid number (1-2).")
+                return
+        except ValueError:
             print("Invalid choice, please enter a valid number (1-2).")
-            return
 
 
 def submit_feedback():
