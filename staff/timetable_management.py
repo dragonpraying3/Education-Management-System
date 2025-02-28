@@ -2,11 +2,15 @@ from datetime import datetime
 
 def convert_time(time):  # Convert time format for easy comparison
     try:
-        return datetime.strptime(time, '%H:%M')  # Validate time format
+        return datetime.strptime(time, '%H:%M')  # Validate time format as 24 hours method (HH:MM)
     except ValueError:
         raise ValueError("Invalid time format. Please enter in HH:MM format.")
 
 def open_timetable():
+    """
+    This function is to read the timetable file
+    :return: return None if file not exists
+    """
     schedule=[] #empty list to store timetable
     try: #handle file not found error
         with open("schedule.txt",'r')as hFile:
@@ -33,7 +37,7 @@ def open_teacher():
             for column in instructor:
                 column=column.rstrip().split(",")
                 item={
-                    "Course ID":column[0],
+                    "Teacher ID":column[0],
                     "Day": column[1],
                     "Instructor":column[2],
                     "Office Hours":column[3]
@@ -58,7 +62,7 @@ def update_timetable():
             print("-"*150)
             index+=1
 
-def update_teachers():
+def view_teachers():
     teachers=open_teacher()
     if teachers is None:
         return
@@ -67,7 +71,7 @@ def update_teachers():
     with open("teachers.txt", 'w') as instructor:
         for item in teachers:
             instructor.write(",".join(item.values()) + "\n") #convert dictionary into comma-separated string and write to file
-            print(f"Course ID:{item['Course ID']}\t\tDay:{item['Day']}\t\tInstructor:{item['Instructor']}\t\tOffice Hours:{item['Office Hours']}")
+            print(f"Teacher ID:{item['Teacher ID']}\t\tDay:{item['Day']}\t\tInstructor:{item['Instructor']}\t\tOffice Hours:{item['Office Hours']}")
             print("-" * 100)
 
 def edit_schedule():
@@ -115,11 +119,11 @@ def edit_schedule():
             elif option==2:
                 update_timetable()
                 print("")
-                update_teachers()
+                view_teachers()
                 bil = int(input("Enter line number of the timetable need to reschedule:"))
                 if 1 <= bil <= len(schedule): #validate the number of line of the timetable
                     real_bil = bil - 1
-                    selected_class=schedule[real_bil]
+                    selected_class=schedule[real_bil] #identify the line of the schedule
                     instructor_name=selected_class['Instructor'].strip()
                     class_day=selected_class['Day'].strip()
 
@@ -192,4 +196,4 @@ def timetable_menu():
         except ValueError:
             print("Invalid input! Only integer 1-3 is allowed.")
 
-# timetable_menu()
+timetable_menu()
