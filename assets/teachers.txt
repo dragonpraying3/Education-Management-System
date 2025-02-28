@@ -1,5 +1,5 @@
-T001,Monday,10:00-12:00,Mr Namazee,A-01-03
-T001,Tuesday,8:30-10:30,Mr Namazee,A-02-01
-T002,Friday,12:00-14:00,Mr Siwa,B-03-02
-T003,Monday, ,Miss Aziah,B-04-01
-T003,Monday, ,Miss Aziah,B-04-01
+T001,Monday,Mr Namazee,10:00-12:00,
+T001,Tuesday,Mr Namazee,8:30-10:30
+T002,Friday,Mr Siwa,12:00-14:00
+T003,Monday,Miss Aziah,13:00-14:00
+T003,Monday,Miss Aziah,15:00-17:00
