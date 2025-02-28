@@ -1,4 +1,5 @@
-ISCC001,Monday,Mr Hulu,08:00-13:00
-ISCC001,Tuesday,Mr Hulu,9:00-10:00
-DBM001,Friday,Miss Christina,12:00-17:00
-PWP001,Monday,Mr Thong,14:00-16:00
+T001,Monday,10:00-12:00,Mr Namazee,A-01-03
+T001,Tuesday,8:30-10:30,Mr Namazee,A-02-01
+T002,Friday,12:00-14:00,Miss Siwa,B-03-02
+T003,Monday, ,Miss Aziah,B-04-01
+T003,Monday, ,Miss Aziah,B-04-01
