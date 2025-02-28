@@ -40,7 +40,7 @@ def open_teacher():
                     "Teacher ID":column[0],
                     "Day": column[1],
                     "Instructor":column[2],
-                    "Office Hours":column[3]
+                    "Available Time":column[3]
                 }
                 teachers.append(item)
             return teachers
@@ -71,7 +71,7 @@ def view_teachers():
     with open("teachers.txt", 'w') as instructor:
         for item in teachers:
             instructor.write(",".join(item.values()) + "\n") #convert dictionary into comma-separated string and write to file
-            print(f"Teacher ID:{item['Teacher ID']}\t\tDay:{item['Day']}\t\tInstructor:{item['Instructor']}\t\tOffice Hours:{item['Office Hours']}")
+            print(f"Teacher ID:{item['Teacher ID']}\t\tDay:{item['Day']}\t\tInstructor:{item['Instructor']}\t\tAvailable Time:{item['Available Time']}")
             print("-" * 100)
 
 def edit_schedule():
@@ -131,19 +131,19 @@ def edit_schedule():
                     for teacher in teachers:
                         if teacher['Instructor'].strip()==instructor_name and teacher['Day'].strip()==class_day:
                             try:
-                                time_start, time_end = teacher['Office Hours'].split("-")
+                                time_start, time_end = teacher['Available Time'].split("-")
                                 new_start, new_end = input("Enter new time (HH:MM-HH:MM): ").split("-")
 
                                 # Validate new time format
                                 new_start = convert_time(new_start)
                                 new_end = convert_time(new_end)
 
-                                # Convert office hours to datetime for comparison
+                                # Convert available time to datetime for comparison
                                 time_start = convert_time(time_start)
                                 time_end = convert_time(time_end)
 
                                 if time_start <= new_start <= time_end and time_start <= new_end <= time_end:
-                                    schedule[real_bil]['Time Slot']=f"{new_start}-{new_end}"
+                                    schedule[real_bil]['Time Slot']=f"{new_start.strftime('%H:%M')}-{new_end.strftime('%H:%M')}"
                                     print("Reschedule successful!")
 
                                     with open("schedule.txt", 'w') as hFile:
@@ -196,4 +196,4 @@ def timetable_menu():
         except ValueError:
             print("Invalid input! Only integer 1-3 is allowed.")
 
-timetable_menu()
+# timetable_menu()
