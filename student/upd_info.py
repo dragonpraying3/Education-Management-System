@@ -16,7 +16,7 @@ def open_students():
                 "Emergency Contact": line[4],
                 "Gender":line[5],
                 "Student Status":line[6],
-                "Tuition Fees":line[7],
+                "Tuition Fees(RM)":line[7],
                 "Payment":line[8]
             }
             students.append(student) #add student dictionary to the list
@@ -32,7 +32,7 @@ def update_student_file(students):
                 student["Contact"],
                 student["Emergency Contact"],
                 student["Gender"],
-                student["Student Status"],
+                student["Student Status(RM)"],
                 student["Tuition Fees"],
                 student["Payment"]
             ]) + "\n") # add newline after each student data
