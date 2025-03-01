@@ -1,8 +1,8 @@
 # student
 def open_course():
     courses = []  # create an empty list to store student data
-    with open("course.txt", 'r') as tFile:
-        for line in tFile:
+    with open("course.txt", 'r') as course_File:
+        for line in course_File:
             line = line.rstrip().split(",")  # split each line become a list and remove whitespace
             while len(line) < 9:
                 line.append("")
@@ -44,8 +44,8 @@ def open_students():
 
 def open_enrolments():
     enrolments = []  # create an empty list to store student data
-    with open("enrolments.txt", 'r') as tFile:
-        for line in tFile:
+    with open("enrolments.txt", 'r') as enrolments_file:
+        for line in enrolments_file:
             line = line.rstrip().split(",")  # split each line become a list and remove whitespace
             while len(line) < 3:
                 line.append("")
@@ -76,8 +76,9 @@ def course_enrolment_menu():
         print("4. Exit")
         print("------------------------------------")
 
-        opt = int(input("Enter your choice (1/2/3): "))
         try:
+            opt = int(input("Enter your choice (1/2/3): "))
+
             if opt == 1:
                 browse_course()
             elif opt == 2:
@@ -88,11 +89,15 @@ def course_enrolment_menu():
                 break
             else:
                 print("Invalid choice")
+
         except ValueError:
-            print("Please only Enter (1/2/3)")
+            print("Invalid input! Only integer between 1-4 is allowed.")
 
 def browse_course():
-
+    """
+    use course.txt
+    :return: display all course
+    """
     courses = open_course()
     print("")
     title = "Available Courses"
@@ -129,14 +134,14 @@ def enrol_in_course():
                 course_found = course
                 break # stop when course id found
 
-        if course_found:
+        if course_found: # if student is already enrolled in the course, it displays a message and returns
             for enrol in enrolled:
                 if enrol["Student ID"] == tp_number and enrol["Course ID"] == course_id:
                     input(f"Student {tp_number} is already enrolled in {course_id}.")
                     return
 
             enrolled.append({"Student ID": tp_number, "Course ID": course_id})
-            update_enrolments(enrolled)
+            update_enrolments(enrolled) # update the file with the new enrollment
 
             input(f"Student {tp_number} enrolled in {course_id} successfully!")
 
@@ -156,13 +161,13 @@ def view_enrol_course():
             student_found = student
             break  # stop when found student id
 
-    if student_found:
-        enrolled_course = []
+    if student_found: # check student exists
+        enrolled_course = [] # create empty list to stores
         for enrolment in enrolments:
             if enrolment["Student ID"] == tp_number:
                 enrolled_course.append(enrolment["Course ID"])
 
-        if enrolled_course:
+        if enrolled_course: # check if student is enrolled in any course, if yes will print the enrolled course
             print(f"\nCourses enrolled by {tp_number}:")
             for course_id in enrolled_course:
                 print(f"  - {course_id}")
@@ -174,4 +179,4 @@ def view_enrol_course():
     input("\npress enter to continue...")
 
 
-#course_enrolment_menu()
+course_enrolment_menu()
