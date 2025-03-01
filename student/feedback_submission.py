@@ -89,12 +89,11 @@ def submit_feedback():
 
         mailboxes.append(new_submission)
         with open("mail.txt", "w") as message:
-            for mail in mailboxes:
-                message.write(",".join(mail.values()) + "\n")
+            for mail in mailboxes: # loop through mailboxes
+                message.write(",".join(mail.values()) + "\n") # write each feedback entry as a comma-separated line.
 
         print("Feedback submitted successfully!")
     else:
         input("Student ID not found, make sure enter correct student ID.")
-
 
 # feedback_menu()
