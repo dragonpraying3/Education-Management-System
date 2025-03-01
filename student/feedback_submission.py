@@ -39,7 +39,7 @@ def open_students():
 def feedback_menu():
     while True:
         print("")
-        title = "Submit A Feedback"
+        title = "Feedback Submission"
         width = 40
         print("=" * width)
         print(title.center(width))
