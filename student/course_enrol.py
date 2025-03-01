@@ -14,8 +14,7 @@ def open_course():
                 "Assignment": line[3],
                 "Lecture Notes": line[4],
                 "Announcement": line[5],
-                "Overall Attendance": line[6],
-                "Lesson Plan": line[7]
+                "Lesson Plan": line[6]
             }
             courses.append(course)  # add student dictionary to the list
     return courses
