@@ -1,7 +1,7 @@
 def open_grades():
     grades=[] #create an empty list to store grade data
-    with open("grades.txt", 'r') as tFile:
-        for line in tFile:
+    with open("grades.txt", 'r') as grade_file:
+        for line in grade_file:
             line=line.rstrip().split(",") #split each line become a list and remove whitespace
             #set the limit of the append block inside the list
             while len(line)<7:
@@ -94,10 +94,10 @@ def grades_track():
                         continue
                     elif opt == 2:
                         print("Exiting grades tracking...")
-                        return
+                        break
                     else:
                         print("Invalid choice, please enter a valid number (1-2).")
-
+                        return
                 elif opt == index:
                     print("Exiting grades tracking...")
                     return
@@ -108,4 +108,4 @@ def grades_track():
 
     print("\nStudent ID not found or no enrolled courses. Please check your TP number.")
 
-# grades_menu()
+#grades_menu()
