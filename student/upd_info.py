@@ -1,3 +1,4 @@
+
 def open_students():
     students=[] #create an empty list to store student data
     with open("students.txt", 'r') as tFile:
@@ -22,9 +23,9 @@ def open_students():
     return students #return the list containing student dictionary
 
 def update_student_file(students):
-    with open("students.txt", "w") as file:
-        for student in students:
-            file.write(",".join([
+    with open("students.txt", "w") as update_file:
+        for student in students: # loop through each student dictionary
+            update_file.write(",".join([ # join all values with comma and write to files
                 student["Student ID"],
                 student["Name"],
                 student["Email"],
@@ -32,9 +33,9 @@ def update_student_file(students):
                 student["Emergency Contact"],
                 student["Gender"],
                 student["Student Status"],
-                student["Course Enroll"],
+                student["Tuition Fees"],
                 student["Payment"]
-            ]) + "\n")
+            ]) + "\n") # add newline after each student data
 
 def information_menu():
     while True:
@@ -56,9 +57,14 @@ def information_menu():
             else:
                 print("Invalid choice, please Enter (1/2)")
         except ValueError:
-            print("Invalid input! Only integer 1-3 is allowed.")
+            print("Invalid input! Only integer 1-2 is allowed.")
 
 def upd_information():
+    """
+    will print out correct personal information
+    ask for student enter new personal information
+    :return: update student personal information
+    """
 
     tp_number = input("\nEnter your TP number: ").upper()
 
@@ -79,36 +85,39 @@ def upd_information():
             print(f"Email: {student_found['Email']}")
             print(f"Contact Number: {student_found['Contact']}")
             print(f"Emergency Contact: {student_found['Emergency Contact']}")
-            print("--------------------------------------")
+            print("--------------------------------------") # print out all current information
 
             print("\n1. Email address")
             print("2. Contact Number")
             print("3. Emergency Contact")
             print("4. Exit")
 
-            choice = int(input("Select the choice you want to update (1/2/3/4): "))
+            try:
+                choice = int(input("Select the choice you want to update (1/2/3/4): "))
 
-            if choice == 1:
-                print(f"Old Email Address: {student_found['Email']}")
-                student_found['Email'] = input("New Email Address: ")
+                if choice == 1:
+                    print(f"Old Email Address: {student_found['Email']}")
+                    student_found['Email'] = input("New Email Address: ")
 
-            elif choice == 2:
-                print(f"Old Contact Number: {student_found['Contact']}")
-                student_found['Contact'] = input("New Contact Number: ")
+                elif choice == 2:
+                    print(f"Old Contact Number: {student_found['Contact']}")
+                    student_found['Contact'] = input("New Contact Number: ")
 
-            elif choice == 3:
-                print(f"Old Emergency Contact: {student_found['Emergency Contact']}")
-                student_found['Emergency Contact'] = input("New Emergency Contact: ")
+                elif choice == 3:
+                    print(f"Old Emergency Contact: {student_found['Emergency Contact']}")
+                    student_found['Emergency Contact'] = input("New Emergency Contact: ")
 
-            elif choice == 4:
-                print("Return to Student Menu\n")
-                break
-            else:
-                print("Invalid choice. No changes made.")
+                elif choice == 4:
+                    print("Return to Student Menu\n")
+                    break
+                else:
+                    print("Invalid choice. No changes made.")
 
-            update_student_file(students)
-            print("Update Information successfully!")
+                update_student_file(students) # calling function to update new information
+                print("Update Information successfully!")
 
+            except ValueError:
+                print("Invalid choice, please enter a valid number (1-4).")
         else:
             print("tp_number not found")
             return
