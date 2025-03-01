@@ -13,8 +13,7 @@ def open_course():
                 "Assignment": line[3],
                 "Lecture Notes": line[4],
                 "Announcement": line[5],
-                "Overall Attendance": line[6],
-                "Lesson Plan": line[7]
+                "Lesson Plan": line[6]
             }
             courses.append(course)  # add student dictionary to the list
     return courses
@@ -84,24 +83,24 @@ def course_material_access():
             break  # stop when found student id
 
     enrolled_courses = []
-    for enrolment in enrolments:
+    for enrolment in enrolments: # loop all course that match tp_number
         if enrolment["Student ID"] == tp_number:
             for course in courses:
                 if course["Course ID"] == enrolment["Course ID"]:
-                    enrolled_courses.append(course)
+                    enrolled_courses.append(course) # append matching course for further processing
 
     while True:
         print("\nCourses enrolled:")
         course_number = 1
         for course in enrolled_courses:
             print(f"  {course_number}. {course['Course Name']} ({course['Course ID']})")
-            course_number += 1
+            course_number += 1 # assign a number to each course for option
         print(f"  {course_number}. Exit") # Display student course enrolments
 
         opt = int(input("\nSelect a course number to view materials: "))
 
         if 1 <= opt < course_number:
-            selected_course = enrolled_courses[opt - 1]
+            selected_course = enrolled_courses[opt - 1] # this can ensure the selected number is within a valid range
 
             print(f"\nCourse: {selected_course['Course Name']} ({selected_course['Course ID']})")
             print(f"Assignment: {selected_course['Assignment']}")
@@ -114,7 +113,7 @@ def course_material_access():
 
             opt = int(input("Select an option: "))
             if opt == 1:
-                print("Download successfully")
+                input("Download successfully")
             elif opt == 2:
                 continue
             elif opt == 3:
