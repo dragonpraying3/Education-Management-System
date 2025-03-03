@@ -8,21 +8,17 @@ def open_teacher():
             for column in instructor:
                 column = column.rstrip().split(",")
                 # Ensure we have 4 fields
-                while len(column) < 4:
-                    column.append("")
                 item = {
                     "Teacher ID": column[0],
                     "Day": column[1],
                     "Instructor": column[2],
                     "Available time": column[3]
-                }
+                  }
                 teachers.append(item)
         return teachers
     except FileNotFoundError:
         print("Warning: teachers.txt not found. Creating an empty file.")
-        with open("teachers.txt", "w") as _:
-            pass
-        return []  # Return an empty list if file not found
+    return None # Return an empty list if file not found
 
 def save_teacher(teachers):
     """Save teacher data back to teachers.txt.
@@ -37,22 +33,24 @@ def save_teacher(teachers):
 
 def open_course():
     courses = []
-    with open("course.txt", 'r') as tFile:
-        for line in tFile:
-            line = line.rstrip().split(",")
+    try:
+        with open("course.txt", 'r') as tFile:
+            for line in tFile:
+                line = line.rstrip().split(",")
             # Ensure we have at least 6 fields
-            while len(line) < 6:
-                line.append("")
-            course = {
-                "Course ID": line[0],
-                "Course Name": line[1],
-                "Instructor": line[2],
-                "Assignment": line[3],
-                "Lecture Notes": line[4],
-                "Lesson Plan": line[5]
-            }
-            courses.append(course)
-    return courses
+                course = {
+                    "Course ID": line[0],
+                    "Course Name": line[1],
+                    "Instructor": line[2],
+                    "Assignment": line[3],
+                    "Lecture Notes": line[4],
+                    "Lesson Plan": line[5]
+                }
+                courses.append(course)
+            return courses
+    except FileNotFoundError:
+        print("Warning: course.txt not found. Creating an empty file.")
+    return None
 
 def save_course(courses):
     """Save course data to course.txt using the same capitalized keys."""
@@ -69,8 +67,8 @@ def Create_course(courses):
     """Create a new course using the same keys as open_course/save_course."""
     print("\n=== Create course ===")
     while True:
-        course_id = input("Enter Course ID: ").strip()
-        course_name = input("Enter Course Name: ").strip()
+        course_id = input("Enter Course ID: ").strip().upper()
+        course_name = input("Enter Course Name: ").strip().upper()
         instructor = input("Enter Instructor: ").strip()
         assignment = input("Enter Assignment: ").strip()
         lecture_notes = input("Enter Lecture Notes: ").strip()
@@ -91,13 +89,13 @@ def Create_course(courses):
             courses.append(new_course)
             save_course(courses)
             print("Course created successfully!\n")
-            input("")
+            input("Press space to continue")
             break
 
 
 def Update_course():
     """Update an existing course's Instructor, Assignment, Lecture Notes, or Lesson Plan."""
-    course_id = input("\nEnter your Course ID: ").strip()
+    course_id = input("\nEnter your Course ID: ").strip().upper()
     courses = open_course()
 
     course_found = None
@@ -121,6 +119,7 @@ def Update_course():
         print(f"Lecture Notes:   {course_found['Lecture Notes']}")
         print(f"Lesson Plan:     {course_found['Lesson Plan']}")
         print("--------------------------------------")
+        input("Press Enter to continue...")
 
         print("\nWhich field do you want to update?")
         print("1. Instructor")
@@ -161,7 +160,6 @@ def Update_course():
 
         elif choice == 5:
             print("Returning to menu.\n")
-            input("")
             break
 
 
@@ -169,7 +167,7 @@ def Update_course():
             print("Invalid choice. No changes made.\n")
             input("")
 
-def Available_time():
+def Schedule():
     """Let the user select a course from teacher records and update its Available Time."""
     teachers = open_teacher()  # Load existing teacher records
 
@@ -211,7 +209,7 @@ def Available_time():
         print("No new time entered.")
 
 
-def Schedule_generate(courses):
+def View_course(courses):
     """Generate a schedule listing each course's details."""
     print("\n=== Course Schedule ===")
     if not courses:
@@ -260,11 +258,11 @@ def Course_creation_and_Management_Menu():
             Update_course()
 
         elif opt == 3:
-            Available_time()
+            View_course(courses)
 
         elif opt == 4:
             # Generate schedule from the (possibly updated) courses
-            Schedule_generate(courses)
+            Schedule()
 
         elif opt == 5:
             print("Returning to teacher menu")
