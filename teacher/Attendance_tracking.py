@@ -79,5 +79,7 @@ def Attendance_Tracking_Menu():
         else:
             print("Invalid input, please choose 1 or 2.\n")
 
-Attendance_Tracking_Menu()
+# Attendance_Tracking_Menu()
+
+
 
