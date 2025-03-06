@@ -78,6 +78,9 @@ def upd_information():
 
     students = open_students()
 
+    if students is None:
+        return
+
     student_found = None
     for student in students:
         if student["Student ID"] == tp_number:
