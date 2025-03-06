@@ -71,6 +71,10 @@ def open_enrolments():
 
 def browse_course():
     courses = open_course()
+
+    if courses is None:
+        return
+
     print("")
     title = "Available Courses"
     width = 40
@@ -86,6 +90,13 @@ def course_material_access():
     students = open_students()
     enrolments = open_enrolments()
     courses = open_course()
+
+    if students is None:
+        return
+    if enrolments is None:
+        return
+    if courses is None:
+        return
 
     tp_number = input("\nEnter your TP number: ").upper()
 
