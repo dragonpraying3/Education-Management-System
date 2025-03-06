@@ -1,69 +1,86 @@
 # student
 def open_course():
     courses = []  # create an empty list to store student data
-    with open("course.txt", 'r') as course_File:
-        for line in course_File:
-            line = line.rstrip().split(",")  # split each line become a list and remove whitespace
-            while len(line) < 9:
-                line.append("")
-            # store each list in a dictionary
-            course = {
-                "Course ID": line[0],
-                "Course Name": line[1],
-                "Instructor": line[2],
-                "Assignment": line[3],
-                "Lecture Notes": line[4],
-                "Announcement": line[5],
-                "Lesson Plan": line[6]
-            }
-            courses.append(course)  # add student dictionary to the list
-    return courses
+    try:
+        with open("course.txt", 'r') as course_File:
+            for line in course_File:
+                line = line.rstrip().split(",")  # split each line become a list and remove whitespace
+                while len(line) < 9:
+                    line.append("")
+                # store each list in a dictionary
+                course = {
+                    "Course ID": line[0],
+                    "Course Name": line[1],
+                    "Teacher ID": line[2],
+                    "Instructor": line[3],
+                    "Assignment": line[4],
+                    "Lecture Notes": line[5],
+                    "Announcement": line[6],
+                    "Lesson Plan": line[7]
+                }
+                courses.append(course)  # add student dictionary to the list
+        return courses
+    except FileNotFoundError:
+        print("Warning : course.txt not found.")
+        return None
 
 def open_students():
     students=[] #create an empty list to store student data
-    with open("students.txt", 'r') as tFile:
-        for line in tFile:
-            line=line.rstrip().split(",") #split each line become a list and remove whitespace
-            #set the limit of the append block inside the list
-            while len(line)<9:
-                line.append("")
-            #store each list in a dictionary
-            student = {
-                "Student ID": line[0],
-                "Name": line[1],
-                "Email": line[2],
-                "Contact": line[3],
-                "Emergency Contact": line[4],
-                "Gender":line[5],
-                "Student Status":line[6],
-                "Tuition Fees":line[7],
-                "Payment":line[8]
-            }
-            students.append(student) #add student dictionary to the list
-    return students #return the list containing student dictionary
+    try:
+        with open("students.txt", 'r') as tFile:
+            for line in tFile:
+                line=line.rstrip().split(",") #split each line become a list and remove whitespace
+                #set the limit of the append block inside the list
+                while len(line)<9:
+                    line.append("")
+                #store each list in a dictionary
+                student = {
+                    "Student ID": line[0],
+                    "Name": line[1],
+                    "Email": line[2],
+                    "Contact": line[3],
+                    "Emergency Contact": line[4],
+                    "Gender":line[5],
+                    "Student Status":line[6],
+                    "Tuition Fees(RM)":line[7],
+                    "Payment":line[8]
+                }
+                students.append(student) #add student dictionary to the list
+        return students #return the list containing student dictionary
+    except FileNotFoundError:
+        print("Warning : students.txt not found.")
+        return None
 
 def open_enrolments():
     enrolments = []  # create an empty list to store student data
-    with open("enrolments.txt", 'r') as enrolments_file:
-        for line in enrolments_file:
-            line = line.rstrip().split(",")  # split each line become a list and remove whitespace
-            while len(line) < 3:
-                line.append("")
-            # store each list in a dictionary
-            enrolment = {
-                "Student ID": line[0],
-                "Course ID": line[1]
-            }
-            enrolments.append(enrolment) # add student dictionary to the list
-    return enrolments
+    try:
+        with open("enrolments.txt", 'r') as enrolments_file:
+            for line in enrolments_file:
+                line = line.rstrip().split(",")  # split each line become a list and remove whitespace
+                while len(line) < 3:
+                    line.append("")
+                # store each list in a dictionary
+                enrolment = {
+                    "Student ID": line[0],
+                    "Course ID": line[1]
+                }
+                enrolments.append(enrolment) # add student dictionary to the list
+        return enrolments
+    except FileNotFoundError:
+        print("Warning : enrolments.txt not found.")
+        return None
 
 def update_enrolments(enrolled):
-    with open("enrolments.txt", "w") as file:
-        for enrol in enrolled:
-            file.write(",".join([
-                enrol["Student ID"],
-                enrol["Course ID"],
-            ]) + "\n")
+    try:
+        with open("enrolments.txt", "w") as file:
+            for enrol in enrolled:
+                file.write(",".join([
+                    enrol["Student ID"],
+                    enrol["Course ID"],
+                ]) + "\n")
+    except FileNotFoundError:
+        print("Warning : enrolments.txt not found.")
+        return None
 
 def course_enrolment_menu():
     while True:
@@ -179,4 +196,4 @@ def view_enrol_course():
     input("\npress enter to continue...")
 
 
-course_enrolment_menu()
+# course_enrolment_menu()
