@@ -1,40 +1,48 @@
 def open_mailbox():
     mailbox=[] #create an empty list to store data
-    with open("mail.txt", 'r')as message:
-        for line in message:
-            line=line.rstrip().split(',') #remove whitespace and split each line become a list
-            #store each student list in a dictionary
-            detail={
-                'Name':line[0],
-                'Role':line[1],
-                'Message':line[2],
-                'Reply':line[3]if len(line) > 3 else ""  #add reply column if having reply message else empty
-            }
-            mailbox.append(detail) #add dictionary into mailbox list
-    return mailbox #return list containing dictionary into mailbox
+    try:
+        with open("mail.txt", 'r')as message:
+            for line in message:
+                line=line.rstrip().split(',') #remove whitespace and split each line become a list
+                #store each student list in a dictionary
+                detail={
+                    'Name':line[0],
+                    'Role':line[1],
+                    'Message':line[2],
+                    'Reply':line[3]if len(line) > 3 else ""  #add reply column if having reply message else empty
+                }
+                mailbox.append(detail) #add dictionary into mailbox list
+        return mailbox #return list containing dictionary into mailbox
+    except FileNotFoundError:
+        print("Warning : mail.txt not found.")
+        return None
 
 def open_students():
     students=[] #create an empty list to store student data
-    with open("students.txt", 'r') as tFile:
-        for line in tFile:
-            line=line.rstrip().split(",") #split each line become a list and remove whitespace
-            #set the limit of the append block inside the list
-            while len(line)<9:
-                line.append("")
-            #store each list in a dictionary
-            student = {
-                "Student ID": line[0],
-                "Name": line[1],
-                "Email": line[2],
-                "Contact": line[3],
-                "Emergency Contact": line[4],
-                "Gender":line[5],
-                "Student Status":line[6],
-                "Tuition Fees":line[7],
-                "Payment":line[8]
-            }
-            students.append(student) #add student dictionary to the list
-    return students #return the list containing student dictionary
+    try:
+        with open("students.txt", 'r') as tFile:
+            for line in tFile:
+                line=line.rstrip().split(",") #split each line become a list and remove whitespace
+                #set the limit of the append block inside the list
+                while len(line)<9:
+                    line.append("")
+                #store each list in a dictionary
+                student = {
+                    "Student ID": line[0],
+                    "Name": line[1],
+                    "Email": line[2],
+                    "Contact": line[3],
+                    "Emergency Contact": line[4],
+                    "Gender":line[5],
+                    "Student Status":line[6],
+                    "Tuition Fees(RM)":line[7],
+                    "Payment":line[8]
+                }
+                students.append(student) #add student dictionary to the list
+        return students #return the list containing student dictionary
+    except FileNotFoundError:
+        print("Warning : students.txt not found.")
+        return None
 
 def feedback_menu():
     while True:
@@ -62,8 +70,6 @@ def feedback_menu():
 
 
 def submit_feedback():
-    print("\nSubmit Feedback")
-
     students = open_students()
     mailboxes = open_mailbox()
 
