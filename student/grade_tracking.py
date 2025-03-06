@@ -49,6 +49,9 @@ def grades_menu():
 def grades_track():
     grades = open_grades()
 
+    if grades is None:
+        return
+
     tp_number = input("\nEnter your TP number: ").upper()
 
     student_courses = []
