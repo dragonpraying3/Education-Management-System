@@ -1,136 +1,114 @@
 def open_grades():
     grades = []
     try:
-        with open("grades.txt", "r") as file:
-            for line in file:
-                fields = line.strip().split(",")
-
-                # Make sure there are at least 2 fields
-                if len(fields) < 2:
+        with open("grades.txt", "r") as f:
+            for line in f:
+                fields = line.rstrip().split(",")
+                if len(fields) < 7:
                     print(f"Skipping invalid line: {line}")
                     continue
-
-                # Create the grade entry from the first two fields
-                grade_entry = {
-                    "Student ID": fields[0],
-                    "Grade": fields[1]
+                record = {
+                    "student_id": fields[0].strip().upper(),
+                    "course_id": fields[1].strip().upper(),
+                    "assignment_score": fields[2].strip(),
+                    "exam_score": fields[3].strip(),
+                    "gpa": fields[4].strip(),
+                    "feedback": fields[5].strip(),
+                    "performance": fields[6].strip()
                 }
-                grades.append(grade_entry)
+                grades.append(record)
+        return grades
     except FileNotFoundError:
-        print("Warning: grades.txt not found. Creating an empty file.")
-        # Create an empty file if it doesn't exist (without using pass)
-        with open("grades.txt", "w") as empty_file:
-            empty_file.write("")  # effectively does nothing, just ensures file is created
-
-    # Return the list of grade dictionaries
-    return grades
+        print("Warning: 'grades.txt' not found. Creating an empty file.")
+        with open("grades.txt", "w") as f:
+            f.write("")
+        return []
 
 def open_attendances():
     attendances = []
     try:
-        with open("attendances.txt", "r") as file:
-            for line in file:
-                # Remove whitespace and split by comma
-                fields = line.strip().split(",")
-                # Ensure we have two fields: Student ID and Attendance
-                attendance_entry = {"Student ID": fields[0], "Attendance": fields[1]}
-                attendances.append(attendance_entry)
+        with open("attendances.txt", "r") as f:
+            for line in f:
+                parts = line.rstrip().split(",")
+                if len(parts) >= 5:
+                    record = {
+                        "Student ID": parts[0].strip().upper(),
+                        "Course ID": parts[1].strip().upper(),
+                        "Class Attendance": parts[2].strip(),
+                        "Event Attendance": parts[3].strip(),
+                        "Combined Attendance": parts[4].strip()
+                    }
+                    attendances.append(record)
+        return attendances
     except FileNotFoundError:
-        # Return empty list if file not found
         print("Warning: attendances.txt not found. Creating an empty file.")
-    return None
-
-def save_attendances(attendances):
-    with open("attendances.txt", "w") as file:
-        for entry in attendances:
-            file.write(f"{entry['Student ID']},{entry['Attendance']}\n")
-
+        with open("attendances.txt", "w") as f:
+            f.write("")
+        return []
 
 def generation_performances(grades):
     print("=== Performance Report (Grades) ===")
-    try:
-        with open('grades.txt', 'r') as file:
-            for line in file:
-                fields = line.strip().split(",")
-
-                # Check that we have at least 7 fields
-                if len(fields) < 7:
-                    print(f"Skipping invalid line: {line}")
-                    continue
-
-                tp_number = fields[0]
-                course_id = fields[1]
-                assignment_score = fields[2]
-                exam_score = fields[3]
-                gpa = fields[4]
-                feedback = fields[5]
-                performance = fields[6]
-
-                # Format the output as desired
-                print(f"TP Number: {tp_number}")
-                print(f"Course ID: {course_id}")
-                print(f"Assignment Score: {assignment_score}")
-                print(f"Exam Score: {exam_score}")
-                print(f"GPA: {gpa}")
-                print(f"Feedback: {feedback}")
-                print(f"Performance: {performance}")
-                print("--------------------------------------------------")
-    except FileNotFoundError:
-        print("Error: grades.txt not found.")
+    student_id = input("Please enter the student ID to view grades (leave blank to view all): ").strip().upper()
+    if not student_id:
+        selected_records = grades
+    else:
+        selected_records = [record for record in grades if record["student_id"] == student_id]
+    if not selected_records:
+        print("No grade records found for the specified student or no records at all.")
+        return
+    for record in selected_records:
+        print(f"student_id: {record['student_id']}")
+        print(f"course_id: {record['course_id']}")
+        print(f"assignment_score: {record['assignment_score']}")
+        print(f"exam_score: {record['exam_score']}")
+        print(f"gpa: {record['gpa']}")
+        print(f"feedback: {record['feedback']}")
+        print(f"performance: {record['performance']}")
+        print("--------------------------------------------------")
 
 def generation_participation(attendances):
-        print("=== Participation Report (Attendances) ===")
-        try:
-            with open("attendances.txt", "r") as file:
-                for line in file:
-                    fields = line.strip().split(",")
+    print("=== Participation Report (Attendances) ===")
+    student_id = input("Please enter the student ID to view attendance (leave blank to view all): ").strip().upper()
+    if not student_id:
+        selected_records = attendances
+    else:
+        selected_records = [record for record in attendances if record["Student ID"] == student_id]
+    if not selected_records:
+        print("No attendance records found for the specified student or no records at all.")
+        return
+    for record in selected_records:
+        print(f"Student ID: {record['Student ID']}")
+        print(f"Course ID: {record['Course ID']}")
+        print(f"Class Attendance: {record['Class Attendance']}")
+        print(f"Event Attendance: {record['Event Attendance']}")
+        print(f"Combined Attendance: {record['Combined Attendance']}")
+        print("--------------------------------------------------")
 
-                    # Ensure there are at least 2 fields: TP Number and Attendance
-                    if len(fields) < 2:
-                        print(f"Skipping invalid line: {line}")
-                        continue
-
-                    tp_number = fields[0]
-                    attendance = fields[1]
-
-                    # Format the output as desired
-                    print(f"TP Number: {tp_number}")
-                    print(f"Attendance: {attendance}")
-                    print("--------------------------------------------------")
-        except FileNotFoundError:
-            print("Error: attendances.txt not found.")
-
-
-def Report_Generation_Menu():
+def report_generation_menu():
     while True:
         grades = open_grades()
         attendances = open_attendances()
 
         print("\n------------------------------------------------------")
-        print("----------------Student Enrolment----------------------")
+        print("---------------- Student Reports ---------------------")
         print("------------------------------------------------------")
-        print("1. generation grades")
-        print("2. generation attendances")
+        print("1. Generate Grades Report")
+        print("2. Generate Attendance Report")
         print("3. Exit")
         print("------------------------------------------------------")
 
         try:
             opt = int(input("Please enter your choice (1-3): "))
         except ValueError:
-            print("Invalid input! Only integer 1- is allowed.")
+            print("Invalid input! Only integer 1-3 is allowed.")
             continue
 
         if opt == 1:
             generation_performances(grades)
-
         elif opt == 2:
             generation_participation(attendances)
-
-
         elif opt == 3:
-            print("Returning to teacher manu")
+            print("Returning to teacher menu")
             break
-
         else:
-            print("Invalid choice, please enter a number between 1-3 .")
-
+            print("Invalid choice, please enter a number between 1-3.")
