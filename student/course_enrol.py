@@ -116,6 +116,9 @@ def browse_course():
     :return: display all course
     """
     courses = open_course()
+    if courses is None:
+        return
+
     print("")
     title = "Available Courses"
     width = 40
@@ -132,6 +135,13 @@ def enrol_in_course():
     students = open_students()
     courses = open_course()
     enrolled = open_enrolments()
+
+    if students is None:
+        return
+    if courses is None:
+        return
+    if enrolled is None:
+        return
 
     tp_number = input("\nEnter your TP number: ").upper()
 
@@ -170,6 +180,12 @@ def enrol_in_course():
 def view_enrol_course():
     students = open_students()
     enrolments = open_enrolments()
+
+    if students is None:
+        return
+    if enrolments is None:
+        return
+
     tp_number = input("\nEnter your TP number: ").upper()
 
     student_found = None
