@@ -58,6 +58,8 @@ def create_student_acc():
     role = "Student"
 
     accounts = open_accounts()
+    if accounts is None:
+        return
 
     account_found = None
     for account in accounts:
@@ -91,6 +93,8 @@ def login_student_acc():
     password = input("Please enter your password: ")
 
     accounts = open_accounts()
+    if accounts is None:
+        return
 
     account_found = None
     for account in accounts:
