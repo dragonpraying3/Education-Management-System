@@ -1,50 +1,90 @@
+def open_enrolments():
+    enrolments = []
+    try:
+        with open("enrolments.txt", "r") as f:
+            for line in f:
+                fields = line.rstrip().split(",")
+                if len(fields) < 2:
+                    print(f"Skipping invalid enrolment line: {line}")
+                    continue
+                enrolment = {
+                    "Student ID": fields[0].strip().upper(),
+                    "Course ID": fields[1].strip().upper()
+                }
+                enrolments.append(enrolment)
+    except FileNotFoundError:
+        print("Warning: enrolments.txt not found. Creating an empty file.")
+        with open("enrolments.txt", "w") as f:
+            f.write("")
+        return []
+    return enrolments
+
+def verify_enrollment(student_id, course_id):
+    enrolments = open_enrolments()
+    for e in enrolments:
+        print(f"Comparing stored: {e['Student ID']} with input: {student_id}")
+        if e["Student ID"] == student_id and e["Course ID"] == course_id:
+            return True
+    return False
+
+
 def open_grades():
-    grades=[]
+    grades = []
     try:
         with open("grades.txt", "r") as f:
             for line in f:
-                line = line.rstrip().split(",")
-                detail={
-                    "student id" : line[0],
-                    "course id" : line[1],
-                    "assignment grades": line[2],
-                    "exam grades" : line[3],
-                    "gpa" : line[4],
-                    "feedback" : line[5],
-                    "performance" : line[6]
+                fields = line.rstrip().split(",")
+                if len(fields) < 7:
+                    print(f"Skipping invalid line: {line}")
+                    continue
+                record = {
+                    "student_id": fields[0].strip().upper(),
+                    "course_id": fields[1].strip().upper(),
+                    "assignment_score": fields[2].strip(),
+                    "exam_score": fields[3].strip(),
+                    "gpa": fields[4].strip(),
+                    "feedback": fields[5].strip(),
+                    "performance": fields[6].strip()
                 }
-                grades.append(detail)
-            return grades
+                grades.append(record)
+        return grades
     except FileNotFoundError:
-        print("Warning: 'grades.txt' not found. ")
-    return None  # return an empty list is file is missing
+        print("Warning: 'grades.txt' not found. Creating an empty file.")
+        with open("grades.txt", "w") as f:
+            f.write("")
+        return []
 
 def save_grades(data):
     with open("grades.txt", "w") as f:
         for record in data:
-            f.write(",".join([
-                record.get("username", "").strip().upper(),
+            line = ",".join([
+                record.get("student_id", "").strip().upper(),
                 record.get("course_id", "").strip().upper(),
                 record.get("assignment_score", "").strip(),
                 record.get("exam_score", "").strip(),
                 record.get("gpa", "").strip(),
+                record.get("feedback", "").strip(),
                 record.get("performance", "").strip()
-            ]) + "\n")
+            ])
+            f.write(line + "\n")
 
 def Grading_assignment_score():
-    username = input("Enter username: ").strip().upper()
-    course_id = input("Enter course id: ").strip().upper()
+    student_id = input("Enter student ID: ").strip().upper()
+    course_id = input("Enter course ID: ").strip().upper()
+
+    # Verify enrollment
+    if not verify_enrollment(student_id, course_id):
+        print("Error: This student is not enrolled in the specified course.")
+        return
 
     data = open_grades()
-
     if not data:
         print("No data found in file.")
         return
 
     found = False
     for record in data:
-        # Compare stripped values to avoid whitespace issues
-        if record["username"].strip() == username and record["course_id"].strip() == course_id:
+        if record["student_id"] == student_id and record["course_id"] == course_id:
             found = True
             try:
                 score = float(input("Enter assignment score (0-100): "))
@@ -55,32 +95,37 @@ def Grading_assignment_score():
                 print("Score must be between 0 and 100!")
                 return
 
-            # Correct key: "assignment_score"
             record["assignment_score"] = str(score)
             save_grades(data)
             print("Assignment score saved successfully.")
+            print(f"You entered assignment score: {score}")
             break
 
     if not found:
-        print("Record not found. Please check username and course ID.")
+        print("Record not found. Please check student ID and course ID.")
 
 def Grading_exam_score():
-    username = input("Enter username: ").strip().upper()
-    course_id = input("Enter course id: ").strip().upper()
-    data = open_grades()
+    student_id = input("Enter student ID: ").strip().upper()
+    course_id = input("Enter course ID: ").strip().upper()
 
+    # Verify enrollment
+    if not verify_enrollment(student_id, course_id):
+        print("Error: This student is not enrolled in the specified course.")
+        return
+
+    data = open_grades()
     if not data:
         print("No data found in file.")
         return
 
     found = False
     for record in data:
-        if record["username"].strip() == username and record["course_id"].strip() == course_id:
+        if record["student_id"] == student_id and record["course_id"] == course_id:
             found = True
             try:
                 score = float(input("Enter exam score (0-100): "))
             except ValueError:
-                print("Invalid input!")
+                print("Invalid input! Please enter a valid number.")
                 return
             if score < 0 or score > 100:
                 print("Score must be between 0 and 100!")
@@ -89,23 +134,29 @@ def Grading_exam_score():
             record["exam_score"] = str(score)
             save_grades(data)
             print("Exam score saved.")
+            print(f"You entered exam score: {score}")
             break
 
     if not found:
         print("Record not found.")
 
 def Grading_gpa():
-    username = input("Enter username: ").strip().upper()
-    course_id = input("Enter course id: ").strip().upper()
-    data = open_grades()
+    student_id = input("Enter student ID: ").strip().upper()
+    course_id = input("Enter course ID: ").strip().upper()
 
+    # Verify enrollment
+    if not verify_enrollment(student_id, course_id):
+        print("Error: This student is not enrolled in the specified course.")
+        return
+
+    data = open_grades()
     if not data:
         print("No data found in file.")
         return
 
     found = False
     for record in data:
-        if record["username"].strip() == username and record["course_id"].strip() == course_id:
+        if record["student_id"] == student_id and record["course_id"] == course_id:
             found = True
             try:
                 assignment = float(record.get("assignment_score", 0))
@@ -135,29 +186,36 @@ def Grading_gpa():
             record["gpa"] = gpa
             save_grades(data)
             print("GPA calculated:", gpa)
-            input("Press space to continue")
+            print(f"Calculated using assignment score: {assignment} and exam score: {exam}")
+            input("Press Enter to continue...")
             break
 
     if not found:
         print("Record not found.")
 
 def Give_feedback():
-    username = input("Enter username: ").strip().upper()
-    course_id = input("Enter course id: ").strip().upper()
-    data = open_grades()
+    student_id = input("Enter student ID: ").strip().upper()
+    course_id = input("Enter course ID: ").strip().upper()
 
+    # Verify enrollment
+    if not verify_enrollment(student_id, course_id):
+        print("Error: This student is not enrolled in the specified course.")
+        return
+
+    data = open_grades()
     if not data:
         print("No data found in file.")
         return
 
     found = False
     for record in data:
-        if record["username"].strip() == username and record["course_id"].strip() == course_id:
+        if record["student_id"] == student_id and record["course_id"] == course_id:
             found = True
             feedback = input("Enter feedback evaluation: ")
-            record["performance"] = feedback  # or "feedback" if you prefer
+            record["feedback"] = feedback
             save_grades(data)
             print("Feedback evaluation saved.")
+            print(f"You entered feedback: {feedback}")
             break
 
     if not found:
@@ -166,12 +224,12 @@ def Give_feedback():
 def Grade_and_Assessment_Menu():
     while True:
         print("\n------------------------------------------------------")
-        print("---------Grade and Assessment----------")
+        print("--------- Grade and Assessment Menu ---------")
         print("------------------------------------------------------")
-        print("1. Grading Assignment score")
-        print("2. Grading Exam score ")
-        print("3. Grading GPA")
-        print("4. Give feedback")
+        print("1. Grade Assignment Score")
+        print("2. Grade Exam Score")
+        print("3. Calculate GPA")
+        print("4. Give Feedback")
         print("5. Exit")
         print("------------------------------------------------------")
 
@@ -182,7 +240,7 @@ def Grade_and_Assessment_Menu():
             continue
 
         if opt == 1:
-            Grading_exam_score()
+            Grading_assignment_score()
         elif opt == 2:
             Grading_exam_score()
         elif opt == 3:
@@ -193,5 +251,7 @@ def Grade_and_Assessment_Menu():
             print("Returning to teacher menu...")
             break
         else:
-            print("Invalid choice, please enter a number between 1-5.")
+            print("Invalid choice, please enter a number between 1 and 5.")
 
+# Run the Grade and Assessment Menu
+# Grade_and_Assessment_Menu()
