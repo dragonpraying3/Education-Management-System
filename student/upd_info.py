@@ -1,41 +1,49 @@
 
 def open_students():
     students=[] #create an empty list to store student data
-    with open("students.txt", 'r') as tFile:
-        for line in tFile:
-            line=line.rstrip().split(",") #split each line become a list and remove whitespace
-            #set the limit of the append block inside the list
-            while len(line)<9:
-                line.append("")
-            #store each list in a dictionary
-            student = {
-                "Student ID": line[0],
-                "Name": line[1],
-                "Email": line[2],
-                "Contact": line[3],
-                "Emergency Contact": line[4],
-                "Gender":line[5],
-                "Student Status":line[6],
-                "Tuition Fees(RM)":line[7],
-                "Payment":line[8]
-            }
-            students.append(student) #add student dictionary to the list
-    return students #return the list containing student dictionary
+    try:
+        with open("students.txt", 'r') as tFile:
+            for line in tFile:
+                line=line.rstrip().split(",") #split each line become a list and remove whitespace
+                #set the limit of the append block inside the list
+                while len(line)<9:
+                    line.append("")
+                #store each list in a dictionary
+                student = {
+                    "Student ID": line[0],
+                    "Name": line[1],
+                    "Email": line[2],
+                    "Contact": line[3],
+                    "Emergency Contact": line[4],
+                    "Gender":line[5],
+                    "Student Status":line[6],
+                    "Tuition Fees(RM)":line[7],
+                    "Payment":line[8]
+                }
+                students.append(student) #add student dictionary to the list
+        return students #return the list containing student dictionary
+    except FileNotFoundError:
+        print("Warning : students.txt not found.")
+        return None
 
 def update_student_file(students):
-    with open("students.txt", "w") as update_file:
-        for student in students: # loop through each student dictionary
-            update_file.write(",".join([ # join all values with comma and write to files
-                student["Student ID"],
-                student["Name"],
-                student["Email"],
-                student["Contact"],
-                student["Emergency Contact"],
-                student["Gender"],
-                student["Student Status(RM)"],
-                student["Tuition Fees"],
-                student["Payment"]
-            ]) + "\n") # add newline after each student data
+    try:
+        with open("students.txt", "w") as update_file:
+            for student in students: # loop through each student dictionary
+                update_file.write(",".join([ # join all values with comma and write to files
+                    student["Student ID"],
+                    student["Name"],
+                    student["Email"],
+                    student["Contact"],
+                    student["Emergency Contact"],
+                    student["Gender"],
+                    student["Student Status"],
+                    student["Tuition Fees(RM)"],
+                    student["Payment"]
+                ]) + "\n") # add newline after each student data
+    except FileNotFoundError:
+        print("Warning : students.txt not found.")
+        return None
 
 def information_menu():
     while True:
