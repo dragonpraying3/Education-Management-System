@@ -73,6 +73,11 @@ def submit_feedback():
     students = open_students()
     mailboxes = open_mailbox()
 
+    if students is None:
+        return
+    if mailboxes is None:
+        return
+
     tp_number = input("\nEnter your TP number: ").upper()
     student_found = None
     for student in students:
