@@ -1,23 +1,27 @@
 def open_grades():
     grades=[] #create an empty list to store grade data
-    with open("grades.txt", 'r') as grade_file:
-        for line in grade_file:
-            line=line.rstrip().split(",") #split each line become a list and remove whitespace
-            #set the limit of the append block inside the list
-            while len(line)<7:
-                line.append("")
-            #store each list in a dictionary
-            grade = {
-                "Student ID": line[0],
-                "Course ID": line[1],
-                "Assignment Grade": line[2],
-                "Exam Grade": line[3],
-                "GPA": line[4],
-                "Feedback": line[5],
-                "Performance":line[6]
-            }
-            grades.append(grade) #add grade dictionary to the list
-    return grades #return the list containing student dictionary
+    try:
+        with open("grades.txt", 'r') as grade_file:
+            for line in grade_file:
+                line=line.rstrip().split(",") #split each line become a list and remove whitespace
+                #set the limit of the append block inside the list
+                while len(line)<7:
+                    line.append("")
+                #store each list in a dictionary
+                grade = {
+                    "Student ID": line[0],
+                    "Course ID": line[1],
+                    "Assignment Grade": line[2],
+                    "Exam Grade": line[3],
+                    "GPA": line[4],
+                    "Feedback": line[5],
+                    "Performance":line[6]
+                }
+                grades.append(grade) #add grade dictionary to the list
+        return grades #return the list containing student dictionary
+    except FileNotFoundError:
+        print("Warning : grades.txt not found.")
+        return None
 
 def grades_menu():
     while True:
