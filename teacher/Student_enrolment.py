@@ -1,23 +1,21 @@
 def open_enrolments():
     enrolments = []
     try:
-        with open("enrolments.txt", 'r') as tFile:
-            for line in tFile:
+        with open("enrolments.txt", "r") as f:
+            for line in f:
                 fields = line.rstrip().split(",")
                 if len(fields) < 2:
                     print(f"Skipping invalid enrolment line: {line}")
                     continue
                 enrolment = {
-                    "Student ID": fields[0],
-                    "Course ID": fields[1]
+                    "Student ID": fields[0].strip().upper(),
+                    "Course ID": fields[1].strip().upper()
                 }
                 enrolments.append(enrolment)
+        return enrolments
     except FileNotFoundError:
-        print("Warning: enrolments.txt not found. Creating an empty file.")
-        with open("enrolments.txt", "w") as f:
-            f.write("")
-        return []
-    return enrolments
+        print("Warning: enrolments.txt not found.")
+    return None
 
 def save_enrolments(enrolments):
     with open("enrolments.txt", "w") as f:
@@ -38,12 +36,10 @@ def open_students():
                     "Name": fields[1]
                 }
                 students.append(student)
+            return students
     except FileNotFoundError:
-        print("Warning: student.txt not found. Creating an empty file.")
-        with open("student.txt", "w") as f:
-            f.write("")
-        return []
-    return students
+        print("Warning: students.txt not found.")
+    return None
 
 def open_course():
     courses = []
@@ -66,10 +62,8 @@ def open_course():
                 courses.append(course)
         return courses
     except FileNotFoundError:
-        print("Warning: course.txt not found. Creating an empty file.")
-        with open("course.txt", "w") as f:
-            f.write("")
-        return []
+        print("Warning: course.txt not found.")
+    return None
 
 def course_exists(course_id):
     """
@@ -85,13 +79,21 @@ def course_exists(course_id):
 
 def student_enrol(enrolments):
     print("\n=== Student Enrolment ===")
-    students = open_students()  # Get valid students from student.txt
+    students = open_students()  # Get the list of students from students.txt
+    if students is None:
+        return
+
+    # Display all available students before inputting student info
+    print("\n=== Available Students ===")
+    for student in students:
+        print(f"Student ID: {student['Student ID']}, Name: {student['Name']}")
+    print("--------------------------------------------------")
 
     while True:
         student_id = input("Enter Student ID: ").strip().upper()
         student_name = input("Enter Student Name: ").strip()
 
-        # Check if (ID, Name) pair exists in student.txt (name comparison case-insensitive)
+        # Check if the (ID, Name) pair exists in students.txt (case-insensitive name check)
         found = False
         for s in students:
             if s["Student ID"].upper() == student_id and s["Name"].lower() == student_name.lower():
@@ -99,7 +101,7 @@ def student_enrol(enrolments):
                 break
 
         if not found:
-            print("Error: This student (ID & Name) was not found in student.txt. Please try again.\n")
+            print("Error: This student (ID & Name) was not found in students.txt. Please try again.\n")
             continue
 
         course_id = input("Enter Course ID: ").strip().upper()
@@ -107,7 +109,7 @@ def student_enrol(enrolments):
             print("Error: Course ID is required. Please try again.\n")
             continue
 
-        # Check that the course exists in course.txt using course_exists() function
+        # Check if the course exists in course.txt using the course_exists() function
         if not course_exists(course_id):
             print("Error: The course does not exist in course.txt. Cannot enrol student in a non-existing course.\n")
             return
@@ -131,7 +133,7 @@ def student_enrol(enrolments):
         print("--------------------------------------------------")
         print("Student enrolment successful!\n")
         print(f"1. Student ID: {new_enrolment['Student ID']}")
-        print(f"2. Course ID:{new_enrolment['Course ID']}")
+        print(f"2. Course ID: {new_enrolment['Course ID']}")
         print("--------------------------------------------------")
         input("Press Enter to continue...")
         break
@@ -147,9 +149,7 @@ def remove_student():
         print("Warning: enrolments.txt not found.")
 
     enrolments = open_enrolments()
-
-    if not enrolments:
-        print("\nNo student enrolments found.")
+    if enrolments is None:
         return
 
     print("\n=== Remove Student Enrolment ===")
