@@ -20,8 +20,8 @@ def open_teacher():
                 teachers.append(teacher)
         return teachers
     except FileNotFoundError:
-        print("Warning: teachers.txt not found. Creating an empty file.")
-        return []  # Return an empty list if file not found
+        print("Warning: teachers.txt not found.")
+        return None  # Return an empty list if file not found
 
 def open_course():
     """
@@ -49,7 +49,7 @@ def open_course():
         return courses
     except FileNotFoundError:
         print("Warning: course.txt not found. Creating an empty file.")
-        return []  # Return an empty list if file not found
+        return None  # Return an empty list if file not found
 
 def save_course(courses):
     """
@@ -84,6 +84,8 @@ def teacher_create_course():
     print("Teacher verified. Welcome,", teacher_found["Instructor"])
 
     courses = open_course()
+    if courses is None:
+        return
     course_id = input("Please enter new Course ID: ").strip().upper()
     if any(c["Course ID"] == course_id for c in courses):
         print("Error: Course ID already exists. Please try again.")
@@ -126,8 +128,7 @@ def update_course():
     """
     course_id = input("\nPlease enter the Course ID to update: ").strip().upper()
     courses = open_course()
-    if not courses:
-        print("No course records available.")
+    if courses is None:
         return
 
     course_found = None
@@ -214,8 +215,7 @@ def view_course(courses):
 def schedule():
     """Let the user choose a teacher record and update its Available Time."""
     teachers = open_teacher()
-    if not teachers:
-        print("\nNo teacher records found (teachers.txt is empty).")
+    if teachers is None:
         return
 
     print("\n--- Teacher Records ---")
