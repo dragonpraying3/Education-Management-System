@@ -608,28 +608,27 @@ def submit_feedback():
         input("Student ID not found, make sure enter correct student ID.")
 
 def login_student_menu():
-    while True:
-        print("")
-        title = "Student Login Menu"
-        width = 40
-        print("=" * width)
-        print(title.center(width))
-        print("=" * width)
-        print("1. Create account")
-        print("2. Login account")
-        print("3. Exit")
+    print("")
+    title = "Student Login Menu"
+    width = 40
+    print("=" * width)
+    print(title.center(width))
+    print("=" * width)
+    print("1. Create account")
+    print("2. Login account")
+    print("3. Exit")
 
-        try:
-            opt = int(input("\nYour choice: "))
+    try:
+        opt = int(input("\nYour choice: "))
 
-            if opt == 1:
-                create_student_acc()
-            elif opt == 2:
-                login_student_acc()
-            elif opt == 3:
-                break
-        except ValueError:
-            print("Invalid input! Only integer between 1-3 is allowed.")
+        if opt == 1:
+            create_student_acc()
+        elif opt == 2:
+            login_student_acc()
+        elif opt == 3:
+            return
+    except ValueError:
+        print("Invalid input! Only integer between 1-3 is allowed.")
 
 
 def create_student_acc():
