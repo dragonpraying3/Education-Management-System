@@ -12,15 +12,15 @@ def open_enrolments():
                     "Course ID": fields[1].strip().upper()
                 }
                 enrolments.append(enrolment)
+        return enrolments
     except FileNotFoundError:
-        print("Warning: enrolments.txt not found. Creating an empty file.")
-        with open("enrolments.txt", "w") as f:
-            f.write("")
-        return []
-    return enrolments
+        print("Warning: enrolments.txt not found.")
+    return None
 
 def verify_enrollment(student_id, course_id):
     enrolments = open_enrolments()
+    if enrolments is None:
+        return
     for e in enrolments:
         print(f"Comparing stored: {e['Student ID']} with input: {student_id}")
         if e["Student ID"] == student_id and e["Course ID"] == course_id:
@@ -50,9 +50,7 @@ def open_grades():
         return grades
     except FileNotFoundError:
         print("Warning: 'grades.txt' not found. Creating an empty file.")
-        with open("grades.txt", "w") as f:
-            f.write("")
-        return []
+    return None
 
 def save_grades(data):
     with open("grades.txt", "w") as f:
@@ -78,8 +76,7 @@ def Grading_assignment_score():
         return
 
     data = open_grades()
-    if not data:
-        print("No data found in file.")
+    if data is None:
         return
 
     found = False
@@ -114,10 +111,8 @@ def Grading_exam_score():
         return
 
     data = open_grades()
-    if not data:
-        print("No data found in file.")
+    if data is None:
         return
-
     found = False
     for record in data:
         if record["student_id"] == student_id and record["course_id"] == course_id:
@@ -150,8 +145,7 @@ def Grading_gpa():
         return
 
     data = open_grades()
-    if not data:
-        print("No data found in file.")
+    if data is None:
         return
 
     found = False
@@ -203,8 +197,7 @@ def Give_feedback():
         return
 
     data = open_grades()
-    if not data:
-        print("No data found in file.")
+    if data is None:
         return
 
     found = False
