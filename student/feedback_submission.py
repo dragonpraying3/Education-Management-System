@@ -86,7 +86,7 @@ def submit_feedback():
             break  # stop when found student id
 
     if student_found:
-        name = input("Enter your name: ").strip()
+        name = input("Enter your name: ").strip().upper()
         msg = input("Enter your feedback message: ").strip()
         role = "Student"  # keep the role to student
 
