@@ -1,0 +1,4 @@
+ISCC001,ISCC,T001,Namezee,no,iscc.pdf,exam date:3/5,
+PYTHON001,PYTHON,T002,Miss Aziah,no,python.pdf,exam date:3/5,
+DBM001,DBM,T004,mr siwa,no,database.pdf,exam date:3/5,
+OS001,OS,T005,Miss Varni,no,os.pdf,exam date:2/4,
