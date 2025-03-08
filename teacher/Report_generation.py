@@ -20,32 +20,36 @@ def open_grades():
         return grades
     except FileNotFoundError:
         print("Warning: 'grades.txt' not found. Creating an empty file.")
-        with open("grades.txt", "w") as f:
-            f.write("")
-        return []
+    return None
 
 def open_attendances():
     attendances = []
     try:
-        with open("attendances.txt", "r") as f:
-            for line in f:
-                parts = line.rstrip().split(",")
-                if len(parts) >= 5:
-                    record = {
-                        "Student ID": parts[0].strip().upper(),
-                        "Course ID": parts[1].strip().upper(),
-                        "Class Attendance": parts[2].strip(),
-                        "Event Attendance": parts[3].strip(),
-                        "Combined Attendance": parts[4].strip()
-                    }
-                    attendances.append(record)
+        with open("attendances.txt", "r") as record:
+            for line in record:
+                fields = line.rstrip().split(',')
+                while len(fields) < 13:
+                    fields.append("")
+                detail = {
+                    'Student ID': fields[0],
+                    'Event Attendance': fields[1],
+                    'Course 1': fields[2],
+                    'Course 1 Attendance': fields[3],
+                    'Course 2': fields[4],
+                    'Course 2 Attendance': fields[5],
+                    'Course 3': fields[6],
+                    'Course 3 Attendance': fields[7],
+                    'Course 4': fields[8],
+                    'Course 4 Attendance': fields[9],
+                    'Course 5': fields[10],
+                    'Course 5 Attendance': fields[11],
+                    'Total Attendance': fields[12]
+                }
+                attendances.append(detail)
         return attendances
     except FileNotFoundError:
-        print("Warning: attendances.txt not found. Creating an empty file.")
-        with open("attendances.txt", "w") as f:
-            f.write("")
-        return []
-
+        print("Error: attendances.txt not found.")
+        return None
 def generation_performances(grades):
     print("=== Performance Report (Grades) ===")
     student_id = input("Please enter the student ID to view grades (leave blank to view all): ").strip().upper()
@@ -78,10 +82,18 @@ def generation_participation(attendances):
         return
     for record in selected_records:
         print(f"Student ID: {record['Student ID']}")
-        print(f"Course ID: {record['Course ID']}")
-        print(f"Class Attendance: {record['Class Attendance']}")
         print(f"Event Attendance: {record['Event Attendance']}")
-        print(f"Combined Attendance: {record['Combined Attendance']}")
+        print(f"Course 1: {record['Course 1']}")
+        print(f"Course 1 Attendance: {record['Course 1 Attendance']}")
+        print(f"Course 2: {record['Course 2']}")
+        print(f"Course 2 Attendance: {record['Course 2 Attendance']}")
+        print(f"Course 3: {record['Course 3']}")
+        print(f"Course 3 Attendance: {record['Course 3 Attendance']}")
+        print(f"Course 4: {record['Course 4']}")
+        print(f"Course 4 Attendance: {record['Course 4 Attendance']}")
+        print(f"Course 5: {record['Course 5']}")
+        print(f"Course 5 Attendance: {record['Course 5 Attendance']}")
+        print(f"Total Attendance: {record['Total Attendance']}")
         print("--------------------------------------------------")
 
 def report_generation_menu():
@@ -112,3 +124,5 @@ def report_generation_menu():
             break
         else:
             print("Invalid choice, please enter a number between 1-3.")
+
+# report_generation_menu()
