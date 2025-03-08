@@ -38,8 +38,8 @@ def open_course():
                     continue
                 course = {
                     "Course ID": parts[0].strip().upper(),
-                    "Teacher ID": parts[1].strip().upper(),
-                    "Course Name": parts[2].strip(),
+                    "Course Name": parts[1].strip().upper(),
+                    "Teacher ID": parts[2].strip(),
                     "Instructor": parts[3].strip(),
                     "Assignment": parts[4].strip(),
                     "Lecture Notes": parts[5].strip(),
@@ -58,7 +58,7 @@ def save_course(courses):
     """
     with open("course.txt", "w") as f:
         for course in courses:
-            f.write(f"{course['Course ID']},{course['Teacher ID']},{course['Course Name']},"
+            f.write(f"{course['Course ID']},{course['Course Name']},{course['Teacher ID']},"
                     f"{course['Instructor']},{course['Assignment']},{course['Lecture Notes']},"
                     f"{course['Lesson Plan']}\n")
 
@@ -102,8 +102,8 @@ def teacher_create_course():
 
     new_course = {
         "Course ID": course_id,
-        "Teacher ID": teacher_id,
-        "Course Name": course_name,
+        "Course Name": teacher_id,
+        "Teacher ID": course_name,
         "Instructor": teacher_found["Instructor"],
         "Assignment": assignment,
         "Lecture Notes": lecture_notes,
@@ -114,8 +114,8 @@ def teacher_create_course():
     print("--------------------------------------------------")
     print("Course created successfully! Current courses:")
     print(f"1. Course ID: {new_course['Course ID']}")
-    print(f"   Teacher ID:    {new_course['Teacher ID']}")
-    print(f"   Course Name:   {new_course['Course Name']}")
+    print(f"   Course Name:    {new_course['Course Name']}")
+    print(f"   Teacher ID:   {new_course['Teacher ID']}")
     print(f"   Instructor:    {new_course['Instructor']}")
     print(f"   Assignment:    {new_course['Assignment']}")
     print(f"   Lecture Notes: {new_course['Lecture Notes']}")
@@ -146,8 +146,8 @@ def update_course():
         print("--------- Current Course Info --------")
         print("--------------------------------------")
         print(f"Course ID:       {course_found['Course ID']}")
-        print(f"Teacher ID:      {course_found['Teacher ID']}")
-        print(f"Course Name:     {course_found['Course Name']}")
+        print(f"Course Name:      {course_found['Course Name']}")
+        print(f"Teacher ID:     {course_found['Teacher ID']}")
         print(f"Instructor:      {course_found['Instructor']}")
         print(f"Assignment:      {course_found['Assignment']}")
         print(f"Lecture Notes:   {course_found['Lecture Notes']}")
@@ -203,8 +203,8 @@ def view_course(courses):
         counter = 1
         for course in courses:
             print(f"{counter}. Course ID: {course['Course ID']}")
-            print(f"   Teacher ID:    {course['Teacher ID']}")
-            print(f"   Course Name:   {course['Course Name']}")
+            print(f"   Course Name:    {course['Course Name']}")
+            print(f"   Teacher ID:   {course['Teacher ID']}")
             print(f"   Instructor:    {course['Instructor']}")
             print(f"   Assignment:    {course['Assignment']}")
             print(f"   Lecture Notes: {course['Lecture Notes']}")
