@@ -8,18 +8,17 @@ def open_grades():
                     print(f"Skipping invalid line: {line}")
                     continue
                 record = {
-                    "student_id": fields[0].strip().upper(),
-                    "course_id": fields[1].strip().upper(),
-                    "assignment_score": fields[2].strip(),
-                    "exam_score": fields[3].strip(),
+                    "student ID": fields[0].strip().upper(),
+                    "course ID": fields[1].strip().upper(),
+                    "assignment score": fields[2].strip(),
+                    "exam score": fields[3].strip(),
                     "gpa": fields[4].strip(),
                     "feedback": fields[5].strip(),
-                    "performance": fields[6].strip()
                 }
                 grades.append(record)
         return grades
     except FileNotFoundError:
-        print("Warning: 'grades.txt' not found. Creating an empty file.")
+        print("Warning: 'grades.txt' not found.")
     return None
 
 def open_attendances():
@@ -56,45 +55,54 @@ def generation_performances(grades):
     if not student_id:
         selected_records = grades
     else:
-        selected_records = [record for record in grades if record["student_id"] == student_id]
+        selected_records = [record for record in grades if record["student ID"] == student_id]
     if not selected_records:
         print("No grade records found for the specified student or no records at all.")
         return
     for record in selected_records:
-        print(f"student_id: {record['student_id']}")
-        print(f"course_id: {record['course_id']}")
-        print(f"assignment_score: {record['assignment_score']}")
-        print(f"exam_score: {record['exam_score']}")
+        print(f"student ID: {record['student ID']}")
+        print(f"course ID: {record['course ID']}")
+        print(f"assignment score: {record['assignment score']}")
+        print(f"exam score: {record['exam score']}")
         print(f"gpa: {record['gpa']}")
         print(f"feedback: {record['feedback']}")
-        print(f"performance: {record['performance']}")
         print("--------------------------------------------------")
 
 def generation_participation(attendances):
     print("=== Participation Report (Attendances) ===")
     student_id = input("Please enter the student ID to view attendance (leave blank to view all): ").strip().upper()
+
+    # If no student ID is entered, show all records; otherwise, show only the matching student's records.
     if not student_id:
         selected_records = attendances
     else:
-        selected_records = [record for record in attendances if record["Student ID"] == student_id]
+        selected_records = [record for record in attendances if record["Student ID"].upper() == student_id]
+
     if not selected_records:
         print("No attendance records found for the specified student or no records at all.")
         return
+
     for record in selected_records:
         print(f"Student ID: {record['Student ID']}")
         print(f"Event Attendance: {record['Event Attendance']}")
-        print(f"Course 1: {record['Course 1']}")
-        print(f"Course 1 Attendance: {record['Course 1 Attendance']}")
-        print(f"Course 2: {record['Course 2']}")
-        print(f"Course 2 Attendance: {record['Course 2 Attendance']}")
-        print(f"Course 3: {record['Course 3']}")
-        print(f"Course 3 Attendance: {record['Course 3 Attendance']}")
-        print(f"Course 4: {record['Course 4']}")
-        print(f"Course 4 Attendance: {record['Course 4 Attendance']}")
-        print(f"Course 5: {record['Course 5']}")
-        print(f"Course 5 Attendance: {record['Course 5 Attendance']}")
+
+        # Loop over Course 1 to Course 5
+        for i in range(1, 6):
+            course_key = f"Course {i}"
+            att_key = f"Course {i} Attendance"
+
+            # Remove extra spaces to ensure we accurately check if the course is empty
+            course_name = record[course_key].strip()
+            course_att = record[att_key].strip()
+
+            # Only print if the course name is not empty
+            if course_name:
+                print(f"{course_key}: {course_name}")
+                print(f"{course_key} Attendance: {course_att}")
+
         print(f"Total Attendance: {record['Total Attendance']}")
         print("--------------------------------------------------")
+
 
 def report_generation_menu():
     while True:
