@@ -77,7 +77,7 @@ def course_exists(course_id):
             return True
     return False
 
-def student_enrol(enrolments):
+def student_enroll(enrolments):
     print("\n=== Student Enrolment ===")
     students = open_students()  # Get the list of students from students.txt
     if students is None:
@@ -168,6 +168,8 @@ def remove_student():
 def student_enrolment_menu():
     while True:
         enrolments = open_enrolments()
+        if enrolments is None:
+            return
 
         print("\n------------------------------------------------------")
         print("---------------- Student Enrolment -------------------")
@@ -184,7 +186,7 @@ def student_enrolment_menu():
             continue
 
         if opt == 1:
-            student_enrol(enrolments)
+            student_enroll(enrolments)
         elif opt == 2:
             remove_student()
         elif opt == 3:
