@@ -48,7 +48,7 @@ def open_course():
                 courses.append(course)
         return courses
     except FileNotFoundError:
-        print("Warning: course.txt not found. Creating an empty file.")
+        print("Warning: course.txt not found.")
         return None  # Return an empty list if file not found
 
 def save_course(courses):
@@ -72,6 +72,8 @@ def teacher_create_course():
     """
     teacher_id = input("Please enter Teacher ID: ").strip().upper()
     teachers = open_teacher()
+    if teachers is None:
+        return
     teacher_found = None
     for t in teachers:
         if t["Teacher ID"] == teacher_id:
@@ -102,8 +104,8 @@ def teacher_create_course():
 
     new_course = {
         "Course ID": course_id,
-        "Course Name": teacher_id,
-        "Teacher ID": course_name,
+        "Course Name": course_id,
+        "Teacher ID": teacher_id,
         "Instructor": teacher_found["Instructor"],
         "Assignment": assignment,
         "Lecture Notes": lecture_notes,
