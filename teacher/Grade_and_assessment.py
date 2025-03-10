@@ -1,4 +1,8 @@
 def open_enrolments():
+    """
+    Reads 'enrolments.txt' and returns a list of dictionaries.
+    Each dictionary contains "Student ID" and "Course ID".
+    """
     enrolments = []
     try:
         with open("enrolments.txt", "r") as f:
@@ -17,9 +21,10 @@ def open_enrolments():
         print("Warning: enrolments.txt not found.")
     return None
 
+
 def display_enrolments():
     """
-    Reads and displays the current enrolment records.
+    Displays the current enrolment records.
     """
     enrolments = open_enrolments()
     if enrolments is None or len(enrolments) == 0:
@@ -30,6 +35,7 @@ def display_enrolments():
         print("Student ID:", rec["Student ID"], "| Course ID:", rec["Course ID"])
     print("---------------------------------\n")
 
+
 def verify_enrollment(student_id, course_id):
     """
     Checks if the (student_id, course_id) pair exists in enrolments.txt.
@@ -37,19 +43,26 @@ def verify_enrollment(student_id, course_id):
     """
     enrolments = open_enrolments()
     if enrolments is None:
-        return False
+        return
     for e in enrolments:
         if e["Student ID"] == student_id and e["Course ID"] == course_id:
             return True
     return False
 
+
 def open_grades():
+    """
+    Reads 'grades.txt' and returns a list of dictionaries.
+    Each record contains:
+      "student ID", "course ID", "assignment score", "exam score",
+      "gpa", "feedback", "performance"
+    """
     grades = []
     try:
         with open("grades.txt", "r") as f:
             for line in f:
                 fields = line.rstrip().split(",")
-                if len(fields) < 7:
+                if len(fields) < 6:
                     print("Skipping invalid line:", line.strip())
                     continue
                 record = {
@@ -59,6 +72,7 @@ def open_grades():
                     "exam score": fields[3].strip(),
                     "gpa": fields[4].strip(),
                     "feedback": fields[5].strip(),
+                    "performance": fields[6].strip() if len(fields) >= 7 else ""
                 }
                 grades.append(record)
         return grades
@@ -66,7 +80,12 @@ def open_grades():
         print("Warning: 'grades.txt' not found.")
     return None
 
+
 def save_grades(data):
+    """
+    Writes the grades records to 'grades.txt'.
+    Each record is written as a line with comma-separated fields.
+    """
     with open("grades.txt", "w") as f:
         for record in data:
             line = ",".join([
@@ -76,11 +95,19 @@ def save_grades(data):
                 record.get("exam score", "").strip(),
                 record.get("gpa", "").strip(),
                 record.get("feedback", "").strip(),
+                record.get("performance", "").strip()
             ])
             f.write(line + "\n")
 
+
 def Grading_assignment_score():
-    # Display current enrolments first.
+    """
+    Grades an assignment:
+      1. Displays current enrolment records.
+      2. Prompts for student ID and course ID, and verifies the enrollment.
+      3. Checks if a grade record exists in 'grades.txt'; if not, creates one.
+      4. Updates the assignment score and saves the record.
+    """
     display_enrolments()
     student_id = input("Enter student ID: ").strip().upper()
     course_id = input("Enter course ID: ").strip().upper()
@@ -93,27 +120,44 @@ def Grading_assignment_score():
     if data is None:
         return
 
-    found = False
-    for record in data:
-        if record["student ID"] == student_id and record["course ID"] == course_id:
-            found = True
-            try:
-                score = float(input("Enter assignment score (0-100): "))
-            except ValueError:
-                print("Invalid input! Please enter a valid number.")
-                return
-            if not 0 <= score <= 100:
-                print("Score must be between 0 and 100!")
-                return
-            record["assignment score"] = str(score)
-            save_grades(data)
-            print("Assignment score saved successfully.")
-            print("You entered assignment score: {:.2f}%".format(score))
+    record = None
+    for rec in data:
+        if rec["student ID"] == student_id and rec["course ID"] == course_id:
+            record = rec
             break
-    if not found:
-        print("Record not found. Please check student ID and course ID.")
+
+    if record is None:
+        record = {
+            "student ID": student_id,
+            "course ID": course_id,
+            "assignment score": "",
+            "exam score": "",
+            "gpa": "",
+            "feedback": "",
+            "performance": ""
+        }
+        data.append(record)
+
+    try:
+        score = float(input("Enter assignment score (0-100): "))
+    except ValueError:
+        print("Invalid input! Please enter a valid number.")
+        return
+    if not 0 <= score <= 100:
+        print("Score must be between 0 and 100!")
+        return
+    record["assignment score"] = str(score)
+    save_grades(data)
+    print("Assignment score saved successfully.")
+    print("You entered assignment score: {:.2f}%".format(score))
+
 
 def Grading_exam_score():
+    """
+    Grades an exam:
+      - Displays enrolment records, verifies enrollment, then either finds or creates the grade record.
+      - Updates the exam score and saves the record.
+    """
     display_enrolments()
     student_id = input("Enter student ID: ").strip().upper()
     course_id = input("Enter course ID: ").strip().upper()
@@ -126,27 +170,45 @@ def Grading_exam_score():
     if data is None:
         return
 
-    found = False
-    for record in data:
-        if record["student ID"] == student_id and record["course ID"] == course_id:
-            found = True
-            try:
-                score = float(input("Enter exam score (0-100): "))
-            except ValueError:
-                print("Invalid input! Please enter a valid number.")
-                return
-            if not 0 <= score <= 100:
-                print("Score must be between 0 and 100!")
-                return
-            record["exam score"] = str(score)
-            save_grades(data)
-            print("Exam score saved.")
-            print("You entered exam score: {:.2f}%".format(score))
+    record = None
+    for rec in data:
+        if rec["student ID"] == student_id and rec["course ID"] == course_id:
+            record = rec
             break
-    if not found:
-        print("Record not found. Please check student ID and course ID.")
+
+    if record is None:
+        record = {
+            "student ID": student_id,
+            "course ID": course_id,
+            "assignment score": "",
+            "exam score": "",
+            "gpa": "",
+            "feedback": "",
+            "performance": ""
+        }
+        data.append(record)
+
+    try:
+        score = float(input("Enter exam score (0-100): "))
+    except ValueError:
+        print("Invalid input! Please enter a valid number.")
+        return
+    if not 0 <= score <= 100:
+        print("Score must be between 0 and 100!")
+        return
+    record["exam score"] = str(score)
+    save_grades(data)
+    print("Exam score saved.")
+    print("You entered exam score: {:.2f}%".format(score))
+
 
 def Grading_gpa():
+    """
+    Calculates GPA:
+      - Displays enrolment records, prompts for student and course IDs, and verifies enrollment.
+      - Retrieves the grade record (or creates one if missing), calculates GPA based on the
+        assignment and exam scores, and saves the record.
+    """
     display_enrolments()
     student_id = input("Enter student ID: ").strip().upper()
     course_id = input("Enter course ID: ").strip().upper()
@@ -157,45 +219,64 @@ def Grading_gpa():
 
     data = open_grades()
     if data is None:
+       return
+
+    record = None
+    for rec in data:
+        if rec["student ID"] == student_id and rec["course ID"] == course_id:
+            record = rec
+            break
+
+    if record is None:
+        record = {
+            "student ID": student_id,
+            "course ID": course_id,
+            "assignment score": "",
+            "exam score": "",
+            "gpa": "",
+            "feedback": "",
+            "performance": ""
+        }
+        data.append(record)
+
+    try:
+        assignment = float(record.get("assignment score", 0))
+        exam = float(record.get("exam score", 0))
+    except ValueError:
+        print("Existing score data is invalid!")
         return
 
-    found = False
-    for record in data:
-        if record["student ID"] == student_id and record["course ID"] == course_id:
-            found = True
-            try:
-                assignment = float(record.get("assignment score", 0))
-                exam = float(record.get("exam score", 0))
-            except ValueError:
-                print("Existing score data is invalid!")
-                return
-            avg = (assignment + exam) / 2
-            if avg >= 80:
-                gpa = "4.0"
-            elif avg >= 75:
-                gpa = "3.7"
-            elif avg >= 70:
-                gpa = "3.3"
-            elif avg >= 65:
-                gpa = "3.0"
-            elif avg >= 60:
-                gpa = "2.7"
-            elif avg >= 55:
-                gpa = "2.3"
-            elif avg >= 50:
-                gpa = "2.0"
-            else:
-                gpa = "Fail"
-            record["gpa"] = gpa
-            save_grades(data)
-            print("GPA calculated:", gpa)
-            print("Calculated using assignment score: {} and exam score: {}".format(assignment, exam))
-            input("Press Enter to continue...")
-            break
-    if not found:
-        print("Record not found. Please check student ID and course ID.")
+    avg = (assignment + exam) / 2
+    if avg >= 80:
+        gpa = "4.0"
+    elif avg >= 75:
+        gpa = "3.7"
+    elif avg >= 70:
+        gpa = "3.3"
+    elif avg >= 65:
+        gpa = "3.0"
+    elif avg >= 60:
+        gpa = "2.7"
+    elif avg >= 55:
+        gpa = "2.3"
+    elif avg >= 50:
+        gpa = "2.0"
+    else:
+        gpa = "Fail"
+    record["gpa"] = gpa
+    save_grades(data)
+    print("GPA calculated:", gpa)
+    print("Calculated using assignment score: {} and exam score: {}".format(assignment, exam))
+    input("Press Enter to continue...")
+
 
 def Give_feedback():
+    """
+    Records feedback:
+      - Displays enrolment records, prompts for student and course IDs, and verifies enrollment.
+      - If a grade record is missing, a new one is created.
+      - Updates the feedback and saves the record.
+    """
     display_enrolments()
     student_id = input("Enter student ID: ").strip().upper()
     course_id = input("Enter course ID: ").strip().upper()
@@ -206,20 +287,32 @@ def Give_feedback():
 
     data = open_grades()
     if data is None:
-        return
+        data = []
 
-    found = False
-    for record in data:
-        if record["student ID"] == student_id and record["course ID"] == course_id:
-            found = True
-            feedback = input("Enter feedback evaluation: ")
-            record["feedback"] = feedback
-            save_grades(data)
-            print("Feedback evaluation saved.")
-            print("You entered feedback:", feedback)
+    record = None
+    for rec in data:
+        if rec["student ID"] == student_id and rec["course ID"] == course_id:
+            record = rec
             break
-    if not found:
-        print("Record not found. Please check student ID and course ID.")
+
+    if record is None:
+        record = {
+            "student ID": student_id,
+            "course ID": course_id,
+            "assignment score": "",
+            "exam score": "",
+            "gpa": "",
+            "feedback": "",
+            "performance": ""
+        }
+        data.append(record)
+
+    feedback = input("Enter feedback evaluation: ")
+    record["feedback"] = feedback
+    save_grades(data)
+    print("Feedback evaluation saved.")
+    print("You entered feedback:", feedback)
+
 
 def Grade_and_Assessment_Menu():
     while True:
@@ -250,6 +343,7 @@ def Grade_and_Assessment_Menu():
             break
         else:
             print("Invalid choice, please enter a number between 1 and 5.")
+
 
 # Run the Grade and Assessment Menu
 # Grade_and_Assessment_Menu()
