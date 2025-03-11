@@ -1,3 +1,12 @@
+###############################################
+# Combined Course Management System
+# (Merged from five files)
+###############################################
+
+# ------------------------------
+# Common Functions
+# ------------------------------
+
 def open_teacher():
     teachers = []  # List to store teacher records
     try:
@@ -783,11 +792,12 @@ def Grade_and_Assessment_Menu():
 
 def upload_or_update_attendance():
     print("\n--- Upload/Update Attendance ---")
-    student_id = input("Enter Student ID: ").strip().upper()
-    course_id = input("Enter Course ID: ").strip().upper()
+    display_enrolments()  # Show enrolment records
+    student_id = input("Enter student ID: ").strip().upper()
+    course_id = input("Enter course ID: ").strip().upper()
 
     if not verify_enrollment(student_id, course_id):
-        print("Error: This student is not enrolled in the specified course.")
+        print("Error: Please enrol student into course.")
         return
 
     event_att = input("Enter Event Attendance (e.g., 1/4) [press Enter to skip]: ").strip()
