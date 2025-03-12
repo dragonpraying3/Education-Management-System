@@ -1,7 +1,0 @@
-Admin,A001,admin
-Staff,S001,staff
-Student,TP800000,stu1
-Student,TP800001,stu2
-Student,TP800002,stu3
-Teacher,T001,siwa
-Teacher,T002,salah
