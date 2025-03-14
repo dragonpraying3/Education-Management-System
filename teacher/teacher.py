@@ -1,12 +1,3 @@
-###############################################
-# Combined Course Management System
-# (Merged from five files)
-###############################################
-
-# ------------------------------
-# Common Functions
-# ------------------------------
-
 def open_teacher():
     teachers = []  # List to store teacher records
     try:
@@ -209,11 +200,7 @@ def recalc_total_attendance(record):
     else:
         record["Total Attendance"] = f"{total_attended}/{total_possible}"  # Update total attendance
 
-# ------------------------------
-# Course Management Functions
-# ------------------------------
-
-def teacher_create_course():
+def create_course():
     teacher_id = input("Please enter Teacher ID: ").strip().upper()  # Get teacher ID from input
     teachers = open_teacher()
     if teachers is None:
@@ -226,16 +213,20 @@ def teacher_create_course():
     if not teacher_found:
         print("Teacher ID does not exist; cannot create course.")  # Teacher not found
         return
-
-    print("Teacher verified. Welcome,", teacher_found["Instructor"])  # Teacher verified
+    else:
+        print("Teacher verified. Welcome,", teacher_found["Instructor"])  # Teacher verified
 
     courses = open_course()
     if courses is None:
         return
-    course_id = input("Please enter new Course ID: ").strip().upper()
-    if any(c["Course ID"] == course_id for c in courses):
-        print("Error: Course ID already exists. Please try again.")
-        return
+    course_id = input("Please enter a new Course ID: ").strip().upper()
+
+    for c in courses:
+        if c["Course ID"] == course_id:
+            print("Error: Course ID already exists. Please try again.")
+            break
+    else:
+        print("New Course ID is valid!")
 
     # Get course details from input
     course_name = input("Please enter Course Name: ").strip()
@@ -413,7 +404,7 @@ def course_creation_and_management_menu():
             continue
 
         if opt == 1:
-            teacher_create_course()  # Create new course
+            create_course()  # Create new course
         elif opt == 2:
             update_course()  # Update existing course
         elif opt == 3:
@@ -425,10 +416,6 @@ def course_creation_and_management_menu():
             break
         else:
             print("Invalid selection, please enter a number between 1 and 5.")
-
-# ------------------------------
-# Student Enrolment Functions
-# ------------------------------
 
 def course_exists(course_id):
     courses = open_course()
@@ -551,10 +538,6 @@ def student_enrolment_menu():
             break
         else:
             print("Invalid choice, please enter a number between 1 and 3.")
-
-# ------------------------------
-# Grade and Assessment Functions
-# ------------------------------
 
 def display_enrolments():
     enrolments = open_enrolments()
@@ -786,10 +769,6 @@ def Grade_and_Assessment_Menu():
         else:
             print("Invalid choice, please enter a number between 1 and 5.")
 
-# ------------------------------
-# Attendance Tracking Functions
-# ------------------------------
-
 def upload_or_update_attendance():
     print("\n--- Upload/Update Attendance ---")
     display_enrolments()  # Show enrolment records
@@ -893,10 +872,6 @@ def attendance_tracking_menu():
             break
         else:
             print("Invalid input, please choose 1 or 2.\n")
-
-# ------------------------------
-# Report Generation Functions
-# ------------------------------
 
 def generation_performances(grades):
     print("=== Performance Report (Grades) ===")
