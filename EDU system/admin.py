@@ -1,3 +1,5 @@
+from datetime import datetime
+
 #Function 1: System Administration
 def open_accounts():
     """
@@ -662,13 +664,21 @@ def update_schedule():
             num = int(input("Enter the number of schedule to edit: "))
             if 1 <= num <= len(schedule):
                 item= schedule[num - 1]  # get the selected event dictionary from list
-                part = input("Please enter the field of the course to update:").strip().title()
+                part = input("Please enter the part of the course to update:").strip().title()
                 if part not in item:
-                    print("The field you enter is not found in the course details. Please enter again.\n")
+                    print("The part you enter is not found in the course details. Please enter again.\n")
                     continue
 
                 # edit the part to whatever new
                 edition = input(f"Edit {part} to :").strip().title()
+                if part=='Time Slot':
+                    try:
+                        start_time, end_time = edition.split("-")
+                        datetime.strptime(start_time, "%H:%M")
+                        datetime.strptime(end_time, "%H:%M")
+                    except ValueError:
+                        print("Invalid time slot format! Please use HH:MM-HH:MM format. (e.g. 12:00-14:00)")
+                        continue
                 updated_day = item["Day"]
                 updated_time = item["Time Slot"]
                 updated_venue=item['Venue']
@@ -679,24 +689,14 @@ def update_schedule():
                     updated_time = edition
                 elif part=='Venue':
                     updated_venue=edition
-                else:
-                    pass
 
-                if part in['Day','Time Slot','Venue']:
-                    for other in schedule:
-                        if other['Day']==updated_day and other['Time Slot']==updated_time and other['Venue']==updated_venue:
-                            print("The class schedule is overlap with other class. Please recheck the schedule!")
-                            break
-                    else:
-                        item[part]=edition
-                        with open("schedule.txt", 'w') as vFile:
-                            for item in schedule:
-                                vFile.write(",".join(item.values()) + "\n")
-
-                        print("\n Course updated successfully!")
-                        view_schedule()
+                for other in schedule:
+                    if other['Day']==updated_day and other['Time Slot']==updated_time and other['Venue']==updated_venue:
+                        print("The class schedule is overlap with other class. Please recheck the schedule!")
+                        break
                 else:
                     item[part] = edition
+
                     with open("schedule.txt", 'w') as vFile:
                         for item in schedule:
                             vFile.write(",".join(item.values()) + "\n")
