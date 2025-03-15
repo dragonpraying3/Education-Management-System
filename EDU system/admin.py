@@ -454,15 +454,17 @@ def create_course():
             if teacher_id=="":
                 print("Teacher ID cannot be empty!")
                 continue
+
+            found=False
+            for account in accounts:
+                if teacher_id ==account['Username']:
+                    found=True
+                    break
+            if found:
+                break
             else:
-                found=False
-                for account in accounts:
-                    if teacher_id ==account['Username']:
-                        found=True
-                        break
-                if not found:
-                    print("Teacher ID not found in the list.")
-                    continue
+                print("Teacher ID not found in the list. Please try again.")
+                return
 
         instructor=input("Enter instructor name or enter to skip:").title()
 
