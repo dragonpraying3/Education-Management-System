@@ -625,7 +625,7 @@ def create_schedule():
         print("-" * 40, "CREATING SCHEDULE PAGE", "-" * 40)
         course_id=input("Enter the course ID:").strip().upper()
         day=input("Enter the class day:").capitalize()
-        time_slot=""
+        time_slot=" "
         instructor=input("Enter the instructor name:").title()
         venue=input("Enter class venue:").capitalize()
 
