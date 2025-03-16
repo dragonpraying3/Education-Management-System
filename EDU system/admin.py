@@ -472,6 +472,8 @@ def create_course():
 
         exists=False
         for course in courses:
+            if course['Course ID'].strip() == "" or course['Course Name'].strip() == "":
+                continue
             if course_id==course['Course ID'] and course_name==course['Course Name']:
                 print(f"The course {course_id} is already exists .Please create again")
                 exists=True
