@@ -297,9 +297,10 @@ def browse_course():
     print(title.center(width))
     print("=" * width)
 
-    for course in courses:
-        print(f"Course ID: {course["Course ID"]} Course Name: {course["Course Name"]}")
-        print("=" * width)
+    for course in courses: 
+        if course["Course ID"].strip() and course["Course Name"].strip(): #check if empty then no display
+            print(f"Course ID: {course["Course ID"]} Course Name: {course["Course Name"]}")
+            print("=" * width)
     input("Enter to continue...")
 
 def enrol_in_course():
