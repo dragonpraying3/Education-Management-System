@@ -265,7 +265,7 @@ def course_enrolment_menu():
         print("------------------------------------")
 
         try:
-            opt = int(input("Enter your choice (1/2/3): "))
+            opt = int(input("Enter your choice (1/2/3/4): "))
 
             if opt == 1:
                 browse_course()
