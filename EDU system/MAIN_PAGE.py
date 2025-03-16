@@ -5,7 +5,7 @@ import staff
 
 def login_account(role):
     accounts = admin.open_accounts()
-    while True:
+    for attempt in range(3):
         print(f"\n--------{role} Login---------")
         username=input("Please enter your username:").upper()
         password=input("Please enter your password:")
@@ -17,6 +17,7 @@ def login_account(role):
         else:
             print("Invalid username or password . Please try again.\n")
             continue
+    print("You have reach the limited attempt. Return to main page.")
 
 def edu_main_page():
     while True:
