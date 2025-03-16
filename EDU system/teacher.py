@@ -466,11 +466,18 @@ def course_exists(course_id):
     return False  # Course does not exist
 
 def student_enroll(enrolments):
-    print("\n=== Student Enrolment ===")
+    enrolled = open_enrolments()
     students = open_students()
+
     if students is None:
         return
+    if enrolled is None:
+        return
 
+    print("\n=== Student Enrolment ===")
+    for enrol in enrolled:
+        print(f"Student ID: {enrol['Student ID']}, Course ID: {enrol['Course ID']}")
+    print("--------------------------------------------------")
     print("\n=== Available Students ===")
     for student in students:
         print(f"Student ID: {student['Student ID']}, Name: {student['Name']}")  # Display each student
