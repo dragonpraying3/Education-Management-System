@@ -818,7 +818,7 @@ def grade_and_assessment_menu():
 
 #function 4:Attendance Tracking Functions
 def upload_or_update_attendance():
-    print("\n--- Upload/Update Attendance ---")
+    print("\n--- Upload/Update Attendance Page---")
     display_enrolments()  # Show enrolment records
     student_id = input("Enter student ID: ").strip().upper()
     course_id = input("Enter course ID: ").strip().upper()
