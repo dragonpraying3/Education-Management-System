@@ -175,9 +175,8 @@ def information_menu():
         print("2. Exit")
         print("-----------------------------------")
 
-        opt = int(input("Enter your choice (1/2): "))
-
         try:
+            opt = int(input("Enter your choice (1/2): "))
             if opt == 1:
                 upd_information()
             elif opt == 2:
@@ -251,7 +250,7 @@ def upd_information():
             except ValueError:
                 print("Invalid choice, please enter a valid number (1-4).")
         else:
-            print("tp_number not found")
+            print("tp number not found")
             return
 
 def course_enrolment_menu():
@@ -266,7 +265,7 @@ def course_enrolment_menu():
         print("------------------------------------")
 
         try:
-            opt = int(input("Enter your choice (1/2/3/4): "))
+            opt = int(input("Enter your choice (1/2/3): "))
 
             if opt == 1:
                 browse_course()
@@ -541,8 +540,8 @@ def grades_track():
                     print("Invalid choice, please enter a valid course number.")
             except ValueError:
                 print("Invalid input! Please enter a number.")
-    else:
-        print("\nStudent ID not found or no enrolled courses. Please check your TP number.")
+
+    print("\nStudent ID not found or no enrolled courses. Please check your TP number.")
 
 def feedback_menu():
     while True:
@@ -608,28 +607,27 @@ def submit_feedback():
         input("Student ID not found, make sure enter correct student ID.")
 
 def login_student_menu():
+    print("")
+    title = "Student Login Menu"
+    width = 40
+    print("=" * width)
+    print(title.center(width))
+    print("=" * width)
+    print("1. Create account")
+    print("2. Login account")
+    print("3. Exit")
 
-        print("")
-        title = "Student Login Menu"
-        width = 40
-        print("=" * width)
-        print(title.center(width))
-        print("=" * width)
-        print("1. Create account")
-        print("2. Login account")
-        print("3. Exit")
+    try:
+        opt = int(input("\nYour choice: "))
 
-        try:
-            opt = int(input("\nYour choice: "))
-
-            if opt == 1:
-                create_student_acc()
-            elif opt == 2:
-                login_student_acc()
-            elif opt == 3:
-                return
-        except ValueError:
-            print("Invalid input! Only integer between 1-3 is allowed.")
+        if opt == 1:
+            create_student_acc()
+        elif opt == 2:
+            login_student_acc()
+        elif opt == 3:
+            return
+    except ValueError:
+        print("Invalid input! Only integer between 1-3 is allowed.")
 
 
 def create_student_acc():
@@ -683,7 +681,6 @@ def login_student_acc():
             break  # stop when account correct
 
     if account_found:
-        print("Login successful!")
         student_menu()
     else:
         print("Account not found!")
@@ -725,3 +722,4 @@ def student_menu():
             print("Invalid input! Only integer between 1-6 is allowed.")
 
 # login_student_menu()
+student_menu()
