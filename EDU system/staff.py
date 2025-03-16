@@ -973,7 +973,7 @@ def reply_mailbox():
             choose = int(input("Enter your action: "))
             if choose==1:
                 reply_sender = input("Reply Email from which role(STUDENT/PARENT/TEACHER):").strip().upper()
-                reply = input("Reply Email from (name) :").title()
+                reply = input("Reply Email from (name) :")
                 found = False
                 for mail in mailboxes:
                     if mail['Name']==reply and mail['Role'].upper()==reply_sender:
