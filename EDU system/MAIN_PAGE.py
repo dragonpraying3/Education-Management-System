@@ -13,11 +13,12 @@ def login_account(role):
         for account in accounts:
             if role==account['Role'] and username==account['Username'] and password==account['Password']:
                 print("Login successful!")
-                return
+                return True
         else:
             print("Invalid username or password . Please try again.\n")
             continue
     print("You have reach the limited attempt. Return to main page.")
+    return False
 
 def edu_main_page():
     while True:
@@ -47,18 +48,18 @@ def edu_main_page():
             selection = int(input("Please select your role(1-5): "))
             if selection==1:
                 role=role_list[selection]
-                login_account(role)
-                admin.main_menu()
+                if login_account(role):
+                    admin.main_menu()
             elif selection==2:
                 student.login_student_menu()
             elif selection==3:
                 role = role_list[selection]
-                login_account(role)
-                teacher.main_menu()
+                if login_account(role):
+                    teacher.main_menu()
             elif selection==4:
                 role = role_list[selection]
-                login_account(role)
-                staff.main_menu()
+                if login_account(role):
+                    staff.main_menu()
             elif selection == 5:
                 print("Thank you for visiting the system.\nExiting Education Management Page...")
                 break
