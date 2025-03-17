@@ -402,16 +402,17 @@ def view_course(courses):
     else:
         counter = 1
         for course in courses:
+            if 'Course ID' in course and 'Course Name' in course and course['Course ID'] and course['Course Name']:
             # Print each course record in a formatted manner
-            print(f"{counter}. Course ID: {course['Course ID']}")
-            print(f"   Course Name:    {course['Course Name']}")
-            print(f"   Teacher ID:     {course['Teacher ID']}")
-            print(f"   Instructor:     {course['Instructor']}")
-            print(f"   Assignment:     {course['Assignment']}")
-            print(f"   Lecture Notes:  {course['Lecture Notes']}")
-            print(f"   Lesson Plan:    {course['Lesson Plan']}")
-            print("--------------------------------------------------")
-            counter += 1
+                print(f"{counter}. Course ID: {course['Course ID']}")
+                print(f"   Course Name:    {course['Course Name']}")
+                print(f"   Teacher ID:     {course['Teacher ID']}")
+                print(f"   Instructor:     {course['Instructor']}")
+                print(f"   Assignment:     {course['Assignment']}")
+                print(f"   Lecture Notes:  {course['Lecture Notes']}")
+                print(f"   Lesson Plan:    {course['Lesson Plan']}")
+                print("--------------------------------------------------")
+                counter += 1
 
 def schedule():
     teachers = open_teacher()
