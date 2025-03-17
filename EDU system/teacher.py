@@ -537,9 +537,9 @@ def student_enroll(enrolments):
     print("--------------------------------------------------")
 
     while True:
-        student_id = input("Enter Student ID: ").strip().upper()
-        student_name = input("Enter Student Name: ").strip()
-        if student_id==" "or student_name==" ":
+        student_id = input("Enter Student ID: ").upper()
+        student_name = input("Enter Student Name: ")
+        if student_id == "" or student_name == "":
             print("No data is entered. Returning to menu.")
             return
 
