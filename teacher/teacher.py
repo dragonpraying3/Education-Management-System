@@ -1,4 +1,4 @@
-#open file functions
+# open file functions
 def open_teacher():
     teachers = []  # List to store teacher records
     try:
@@ -10,15 +10,16 @@ def open_teacher():
                     continue
                 teacher = {
                     "Teacher ID": parts[0].strip().upper(),  # Teacher ID in uppercase
-                    "Day": parts[1].strip(),                 # Day info
-                    "Instructor": parts[2].strip(),          # Instructor name
-                    "Available time": parts[3].strip()         # Available time
+                    "Day": parts[1].strip(),  # Day info
+                    "Instructor": parts[2].strip(),  # Instructor name
+                    "Available time": parts[3].strip()  # Available time
                 }
                 teachers.append(teacher)
         return teachers  # Return list of teachers
     except FileNotFoundError:
         print("Warning: teachers.txt not found.")
         return None
+
 
 def open_course():
     courses = []  # List to store course records
@@ -30,19 +31,20 @@ def open_course():
                     print("Warning: Incomplete course record found and skipped.")  # Skip invalid record
                     continue
                 course = {
-                    "Course ID": parts[0].strip().upper(),    # Course ID in uppercase
-                    "Course Name": parts[1].strip().upper(),    # Course Name in uppercase
-                    "Teacher ID": parts[2].strip(),             # Teacher ID
-                    "Instructor": parts[3].strip(),             # Instructor
-                    "Assignment": parts[4].strip(),             # Assignment details
-                    "Lecture Notes": parts[5].strip(),          # Lecture Notes
-                    "Lesson Plan": parts[6].strip()             # Lesson Plan
+                    "Course ID": parts[0].strip().upper(),  # Course ID in uppercase
+                    "Course Name": parts[1].strip().upper(),  # Course Name in uppercase
+                    "Teacher ID": parts[2].strip(),  # Teacher ID
+                    "Instructor": parts[3].strip(),  # Instructor
+                    "Assignment": parts[4].strip(),  # Assignment details
+                    "Lecture Notes": parts[5].strip(),  # Lecture Notes
+                    "Lesson Plan": parts[6].strip()  # Lesson Plan
                 }
                 courses.append(course)
         return courses  # Return list of courses
     except FileNotFoundError:
         print("Warning: course.txt not found.")
         return None
+
 
 def save_course(courses):
     with open("course.txt", "w") as f:
@@ -51,6 +53,7 @@ def save_course(courses):
             f.write(f"{course['Course ID']},{course['Course Name']},{course['Teacher ID']},"
                     f"{course['Instructor']},{course['Assignment']},{course['Lecture Notes']},"
                     f"{course['Lesson Plan']}\n")
+
 
 def open_enrolments():
     enrolments = []  # List for enrolment records
@@ -63,7 +66,7 @@ def open_enrolments():
                     continue
                 enrolment = {
                     "Student ID": fields[0].strip().upper(),  # Student ID in uppercase
-                    "Course ID": fields[1].strip().upper()      # Course ID in uppercase
+                    "Course ID": fields[1].strip().upper()  # Course ID in uppercase
                 }
                 enrolments.append(enrolment)
         return enrolments  # Return list of enrolments
@@ -71,11 +74,13 @@ def open_enrolments():
         print("Warning: enrolments.txt not found.")
     return None
 
+
 def save_enrolments(enrolments):
     with open("enrolments.txt", "w") as f:
         for e in enrolments:
             # Write each enrolment record
             f.write(f"{e['Student ID']},{e['Course ID']}\n")
+
 
 def open_students():
     students = []  # List for student records
@@ -88,13 +93,14 @@ def open_students():
                     continue
                 student = {
                     "Student ID": fields[0].strip(),  # Student ID
-                    "Name": fields[1].strip()           # Student Name
+                    "Name": fields[1].strip()  # Student Name
                 }
                 students.append(student)
             return students  # Return list of students
     except FileNotFoundError:
         print("Warning: students.txt not found.")
     return None
+
 
 def open_grades():
     grades = []  # List for grade records
@@ -107,11 +113,11 @@ def open_grades():
                     continue
                 record = {
                     "student ID": fields[0].strip().upper(),  # Student ID in uppercase
-                    "course ID": fields[1].strip().upper(),     # Course ID in uppercase
-                    "assignment score": fields[2].strip(),      # Assignment score
-                    "exam score": fields[3].strip(),            # Exam score
-                    "gpa": fields[4].strip(),                   # GPA
-                    "feedback": fields[5].strip(),              # Feedback
+                    "course ID": fields[1].strip().upper(),  # Course ID in uppercase
+                    "assignment score": fields[2].strip(),  # Assignment score
+                    "exam score": fields[3].strip(),  # Exam score
+                    "gpa": fields[4].strip(),  # GPA
+                    "feedback": fields[5].strip(),  # Feedback
                     "performance": fields[6].strip() if len(fields) >= 7 else ""  # Performance (optional)
                 }
                 grades.append(record)
@@ -119,6 +125,7 @@ def open_grades():
     except FileNotFoundError:
         print("Warning: grades.txt not found.")
         return None
+
 
 def save_grades(data):
     with open("grades.txt", "w") as f:
@@ -134,6 +141,7 @@ def save_grades(data):
                 record.get("performance", "").strip()
             ])
             f.write(line + "\n")
+
 
 def open_attendances():
     attendances = []  # List for attendance records
@@ -164,6 +172,7 @@ def open_attendances():
         print("Error: attendances.txt not found.")
         return None
 
+
 def verify_enrollment(student_id, course_id):
     enrolments = open_enrolments()  # Get enrolment records
     if enrolments is None:
@@ -172,6 +181,7 @@ def verify_enrollment(student_id, course_id):
         if e["Student ID"] == student_id and e["Course ID"] == course_id:
             return True  # Enrollment found
     return False  # Not enrolled
+
 
 def parse_attendance(att_str):
     att_str = att_str.strip()
@@ -182,6 +192,7 @@ def parse_attendance(att_str):
         return int(attended.strip()), int(total.strip())
     except ValueError:
         return (0, 0)
+
 
 def recalc_total_attendance(record):
     total_attended = 0
@@ -201,7 +212,8 @@ def recalc_total_attendance(record):
     else:
         record["Total Attendance"] = f"{total_attended}/{total_possible}"  # Update total attendance
 
-#function 1: Course Management Functions
+
+# function 1: Course Management Functions
 
 def teacher_create_course():
     courses = open_course()
@@ -244,10 +256,10 @@ def teacher_create_course():
         return
 
     print(f"\nYou selected an empty course slot.")
-    
+
     course_id = input("\nPlease enter new Course ID: ").strip().upper()
 
-    # Check if Course ID already exists
+ # Check if course ID already exists
     for course in courses:
         if course["Course ID"] == course_id:
             print("Error: Course ID already exists. Please try again.")
@@ -303,11 +315,19 @@ def teacher_create_course():
             index += 1
     print("--------------------------------------------------")
 
+
 def update_course():
-    course_id = input("\nPlease enter the Course ID to update: ").strip().upper()
     courses = open_course()
     if courses is None:
         return
+
+    while True:
+        course_id = input("\nPlease enter the Course ID to update: ").strip().upper()
+        if course_id:
+            break
+        else:
+            print("Error: Course ID cannot be empty. Please enter a valid Course ID.")
+            return
 
     course_found = None
     for course in courses:
@@ -374,6 +394,7 @@ def update_course():
         else:
             print("Invalid choice, please enter a number between 1 and 5.")
 
+
 def view_course(courses):
     print("\n=== Course List ===")
     if not courses:
@@ -392,38 +413,65 @@ def view_course(courses):
             print("--------------------------------------------------")
             counter += 1
 
+
 def schedule():
     teachers = open_teacher()
     if teachers is None:
+        return  # If the teacher file cannot be read, exit immediately
+
+    # Prompt the user for the Teacher ID
+    teacher_id_input = input("Please enter the Teacher ID to update the available time: ").strip().upper()
+    if not teacher_id_input:
+        print("Error: Teacher ID cannot be empty. Returning to course management menu.")
         return
 
-    print("\n--- Teacher Records ---")
-    counter = 1
-    for teacher in teachers:
-        print(f"{counter}. Teacher ID: {teacher['Teacher ID']} - Instructor: {teacher['Instructor']} - Available Time: {teacher['Available time']}")  # List teachers
-        counter += 1
+    # Find all teacher records that match the entered Teacher ID
+    matching_records = [t for t in teachers if t["Teacher ID"] == teacher_id_input]
 
-    try:
-        choice = int(input("Select the teacher (by number) to update Available Time: "))
-    except ValueError:
-        print("Invalid input. Please enter a number.")
+    if not matching_records:
+        print("Teacher ID not found. Returning to course management menu.")
         return
 
-    if choice < 1 or choice > len(teachers):
-        print("Invalid selection, number out of range.")
-        return
+    # Print a nicely formatted header
+    print("\n====================================================")
+    print(f"   The following records were found for Teacher ID = {teacher_id_input}:")
+    print("====================================================\n")
 
-    selected_teacher = teachers[choice - 1]  # Get the selected teacher
-    new_time = input("Enter new Available Time: ").strip()
+    # Display each matching record in aligned columns
+    for i, record in enumerate(matching_records, start=1):
+        day_str = f"Day: {record['Day']}"
+        instr_str = f"Instructor: {record['Instructor']}"
+        time_str = f"Available Time: {record['Available time']}"
+        print(f"{i}. {day_str:<12}  |  {instr_str:<20}  |  {time_str:<20}")
+
+    print("\n----------------------------------------------------")
+
+    # Prompt the user to choose which record to update
+    while True:
+        try:
+            choice = int(input("Please select a record number to update: "))
+            if 1 <= choice <= len(matching_records):
+                break
+            else:
+                print(f"Invalid selection. Please enter a number between 1 and {len(matching_records)}.")
+        except ValueError:
+            print("Invalid input. Please enter a valid integer.")
+
+    # Retrieve the chosen record
+    selected_record = matching_records[choice - 1]
+
+    # Prompt the user to enter the new available time
+    new_time = input("Please enter the new Available Time: ").strip()
     if new_time:
-        selected_teacher["Available time"] = new_time  # Update available time
+        selected_record["Available time"] = new_time
         print("Available Time updated successfully!")
-        with open("teachers.txt", "w") as f:
-            # Rewrite all teacher records with updated time
-            for teacher in teachers:
-                f.write(f"{teacher['Teacher ID']},{teacher['Day']},{teacher['Instructor']},{teacher['Available time']}\n")
     else:
-        print("No new Available Time entered.")
+        print("No new Available Time was entered.")
+
+    # Write the updated teacher records back to teachers.txt
+    with open("teachers.txt", "w") as f:
+        for t in teachers:
+            f.write(f"{t['Teacher ID']},{t['Day']},{t['Instructor']},{t['Available time']}\n")
 
 def course_creation_and_management_menu():
     # Main menu for course management functions
@@ -459,7 +507,8 @@ def course_creation_and_management_menu():
         else:
             print("Invalid selection, please enter a number between 1 and 5.")
 
-#function 2:Student Enrolment Functions
+
+# function 2:Student Enrolment Functions
 def course_exists(course_id):
     courses = open_course()
     if courses is None:
@@ -468,6 +517,7 @@ def course_exists(course_id):
         if course["Course ID"].upper() == course_id.upper():
             return True  # Course found
     return False  # Course does not exist
+
 
 def student_enroll(enrolments):
     enrolled = open_enrolments()
@@ -533,6 +583,7 @@ def student_enroll(enrolments):
         input("Press Enter to continue...")
         break
 
+
 def remove_student():
     try:
         with open('enrolments.txt', 'r') as wFile:
@@ -550,7 +601,8 @@ def remove_student():
     student_id = input("Enter Student ID to remove: ").strip().upper()
     course_id = input("Enter Course ID to remove: ").strip().upper()
 
-    updated_enrolments = [e for e in enrolments if not (e["Student ID"].upper() == student_id and e["Course ID"].upper() == course_id)]
+    updated_enrolments = [e for e in enrolments if
+                          not (e["Student ID"].upper() == student_id and e["Course ID"].upper() == course_id)]
 
     if len(updated_enrolments) == len(enrolments):
         print("Error: No matching enrolment found for the given Student ID and Course ID.\n")
@@ -558,6 +610,7 @@ def remove_student():
         save_enrolments(updated_enrolments)
         print(f"Enrolment for Student ID {student_id} in Course ID {course_id} removed successfully!\n")
         input("Press Enter to continue...")
+
 
 def student_enrolment_menu():
     while True:
@@ -589,7 +642,8 @@ def student_enrolment_menu():
         else:
             print("Invalid choice, please enter a number between 1 and 3.")
 
-#function 3:Grade and Assessment Functions
+
+# function 3:Grade and Assessment Functions
 def display_enrolments():
     enrolments = open_enrolments()
     if enrolments is None or len(enrolments) == 0:
@@ -599,6 +653,7 @@ def display_enrolments():
     for rec in enrolments:
         print("Student ID:", rec["Student ID"], "| Course ID:", rec["Course ID"])  # Display each enrolment
     print("---------------------------------\n")
+
 
 def grading_assignment_score():
     display_enrolments()  # Show enrolment records
@@ -645,6 +700,7 @@ def grading_assignment_score():
     print("Assignment score saved successfully.")
     print("You entered assignment score: {:.2f}%".format(score))
 
+
 def grading_exam_score():
     display_enrolments()  # Display enrolments
     student_id = input("Enter student ID: ").strip().upper()
@@ -690,6 +746,7 @@ def grading_exam_score():
     print("Exam score saved.")
     print("You entered exam score: {:.2f}%".format(score))
 
+
 def grading_gpa():
     display_enrolments()  # Show enrolment records
     student_id = input("Enter student ID: ").strip().upper()
@@ -701,7 +758,7 @@ def grading_gpa():
 
     data = open_grades()
     if data is None:
-       return
+        return
 
     record = None
     for rec in data:
@@ -752,6 +809,7 @@ def grading_gpa():
     print("Calculated using assignment score:", assignment, "and exam score:", exam)
     input("Press Enter to continue...")
 
+
 def give_feedback():
     display_enrolments()  # Show enrolment records
     student_id = input("Enter student ID: ").strip().upper()
@@ -790,6 +848,7 @@ def give_feedback():
     print("Feedback evaluation saved.")
     print("You entered feedback:", feedback)
 
+
 def grade_and_assessment_menu():
     while True:
         print("\n------------------------------------------------------")
@@ -820,7 +879,8 @@ def grade_and_assessment_menu():
         else:
             print("Invalid choice, please enter a number between 1 and 5.")
 
-#function 4:Attendance Tracking Functions
+
+# function 4:Attendance Tracking Functions
 def upload_or_update_attendance():
     print("\n--- Upload/Update Attendance Page---")
     display_enrolments()  # Show enrolment records
@@ -911,6 +971,7 @@ def upload_or_update_attendance():
     print("Course ID:         " + course_id)
     print("Course Attendance: " + course_att)
 
+
 def attendance_tracking_menu():
     while True:
         print("\n----------- Attendance System Menu -----------")
@@ -925,7 +986,8 @@ def attendance_tracking_menu():
         else:
             print("Invalid input, please choose 1 or 2.\n")
 
-#function 5:Report Generation Functions
+
+# function 5:Report Generation Functions
 def generation_performances(grades):
     print("=== Performance Report (Grades) ===")
     student_id = input("Please enter the student ID to view grades (leave blank to view all): ").strip().upper()
@@ -944,6 +1006,7 @@ def generation_performances(grades):
         print(f"GPA: {record['gpa']}")
         print(f"Feedback: {record['feedback']}")
         print("--------------------------------------------------")
+
 
 def generation_participation(attendances):
     print("=== Participation Report (Attendances) ===")
@@ -971,6 +1034,7 @@ def generation_participation(attendances):
                 print(f"{course_key} Attendance: {course_att}")
         print(f"Total Attendance: {record['Total Attendance']}")
         print("--------------------------------------------------")
+
 
 def report_generation_menu():
     while True:
@@ -1001,39 +1065,40 @@ def report_generation_menu():
         else:
             print("Invalid choice, please enter a number between 1 and 3.")
 
+
 def main_menu():
-        while True:
-            # ... Print your main menu header ...
+    while True:
+        # ... Print your main menu header ...
 
-            print("\n------------------------------------------------------")
-            print("---------Teacher Management System--------------------")
-            print("------------------------------------------------------")
-            print("1. Course Creation and Management")
-            print("2. Student Enrolment")
-            print("3. Grade and Assessment")
-            print("4. Attendances Tracking")
-            print("5. Report Generation")
-            print("6. Exit")
-            print("------------------------------------------------------")
+        print("\n------------------------------------------------------")
+        print("---------Teacher Management System--------------------")
+        print("------------------------------------------------------")
+        print("1. Course Creation and Management")
+        print("2. Student Enrolment")
+        print("3. Grade and Assessment")
+        print("4. Attendances Tracking")
+        print("5. Report Generation")
+        print("6. Exit")
+        print("------------------------------------------------------")
 
-            try:
-                selection = int(input("Please enter your choice (1-6): "))
-                if selection == 1:
-                    course_creation_and_management_menu()
-                elif selection == 2:
-                    student_enrolment_menu()
-                elif selection == 3:
-                    grade_and_assessment_menu()
-                elif selection == 4:
-                    attendance_tracking_menu()
-                elif selection == 5:
-                    report_generation_menu()
-                elif selection == 6:
-                    print("Thank you for visiting the system.\nExiting Teacher Management Page...")
-                    break
-                else:
-                    print("Invalid choice! Please enter a number between 1 and 6.\n")
-            except ValueError:
-                print("Invalid input! Only integers 1–6 are allowed.\nPlease try again.")
+        try:
+            selection = int(input("Please enter your choice (1-6): "))
+            if selection == 1:
+                course_creation_and_management_menu()
+            elif selection == 2:
+                student_enrolment_menu()
+            elif selection == 3:
+                grade_and_assessment_menu()
+            elif selection == 4:
+                attendance_tracking_menu()
+            elif selection == 5:
+                report_generation_menu()
+            elif selection == 6:
+                print("Thank you for visiting the system.\nExiting Teacher Management Page...")
+                break
+            else:
+                print("Invalid choice! Please enter a number between 1 and 6.\n")
+        except ValueError:
+            print("Invalid input! Only integers 1–6 are allowed.\nPlease try again.")
 
 main_menu()
