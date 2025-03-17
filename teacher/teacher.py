@@ -426,44 +426,26 @@ def schedule():
         return
 
     # Find all teacher records that match the entered Teacher ID
-    matching_records = [t for t in teachers if t["Teacher ID"] == teacher_id_input]
+    matching_records = []
+    for t in teachers:
+        if t["Teacher ID"] == teacher_id_input:
+            matching_records.append(t)
 
     if not matching_records:
         print("Teacher ID not found. Returning to course management menu.")
         return
 
-    # Print a nicely formatted header
+    # Display all matching records (without using enumerate)
     print("\n====================================================")
     print(f"   The following records were found for Teacher ID = {teacher_id_input}:")
     print("====================================================\n")
-
-    # Print top border
-    print("========================================================")
-
     i = 1
+    print("\n====================================================")
     for record in matching_records:
-        # Prepare each piece of text
-        day_str = "Day: " + record["Day"]
-        instr_str = "Instructor: " + record["Instructor"]
-        time_str = "Available Time: " + record["Available time"]
-
-        # Use ljust() for left alignment and padding
-        line = (
-                str(i) + ". "
-                + day_str.ljust(12)
-                + " | "
-                + instr_str.ljust(20)
-                + " | "
-                + time_str.ljust(20)
-        )
-
-        print(line)
+        print(f"{i}. Day: {record['Day']} - Instructor: {record['Instructor']} - Available Time: {record['Available time']}")
         i += 1
-
-    # Print bottom border
-    print("========================================================")
-
-    # Prompt the user to choose which record to update
+    print("====================================================\n")
+    # Ask the user to select which record to update
     while True:
         try:
             choice = int(input("Please select a record number to update: "))
@@ -471,10 +453,8 @@ def schedule():
                 break
             else:
                 print(f"Invalid selection. Please enter a number between 1 and {len(matching_records)}.")
-                return
         except ValueError:
             print("Invalid input. Please enter a valid integer.")
-            return
 
     # Retrieve the chosen record
     selected_record = matching_records[choice - 1]
@@ -491,6 +471,7 @@ def schedule():
     with open("teachers.txt", "w") as f:
         for t in teachers:
             f.write(f"{t['Teacher ID']},{t['Day']},{t['Instructor']},{t['Available time']}\n")
+
 
 def course_creation_and_management_menu():
     # Main menu for course management functions
