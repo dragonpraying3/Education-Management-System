@@ -1,6 +1,0 @@
-ISCC001,ISCC,T001,Namazee,no,iscc.pdf,exam date:3/5,
-PYTHON001,PYTHON,T002,Miss Aziah,no,python.pdf,exam date:3/5,
-DBM001,DBM,T003,Mr Siwa,no,database.pdf,exam date:3/5,
-OS001,OS,T004,Miss Varnikah,no,os.pdf,exam date:2/4,
-,,T001,,,,,
-,,T002,,,,,
