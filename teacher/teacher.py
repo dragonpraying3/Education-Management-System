@@ -437,14 +437,31 @@ def schedule():
     print(f"   The following records were found for Teacher ID = {teacher_id_input}:")
     print("====================================================\n")
 
-    # Display each matching record in aligned columns
-    for i, record in enumerate(matching_records, start=1):
-        day_str = f"Day: {record['Day']}"
-        instr_str = f"Instructor: {record['Instructor']}"
-        time_str = f"Available Time: {record['Available time']}"
-        print(f"{i}. {day_str:<12}  |  {instr_str:<20}  |  {time_str:<20}")
+    # Print top border
+    print("========================================================")
 
-    print("\n----------------------------------------------------")
+    i = 1
+    for record in matching_records:
+        # Prepare each piece of text
+        day_str = "Day: " + record["Day"]
+        instr_str = "Instructor: " + record["Instructor"]
+        time_str = "Available Time: " + record["Available time"]
+
+        # Use ljust() for left alignment and padding
+        line = (
+                str(i) + ". "
+                + day_str.ljust(12)
+                + " | "
+                + instr_str.ljust(20)
+                + " | "
+                + time_str.ljust(20)
+        )
+
+        print(line)
+        i += 1
+
+    # Print bottom border
+    print("========================================================")
 
     # Prompt the user to choose which record to update
     while True:
@@ -454,8 +471,10 @@ def schedule():
                 break
             else:
                 print(f"Invalid selection. Please enter a number between 1 and {len(matching_records)}.")
+                return
         except ValueError:
             print("Invalid input. Please enter a valid integer.")
+            return
 
     # Retrieve the chosen record
     selected_record = matching_records[choice - 1]
