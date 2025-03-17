@@ -1,3 +1,0 @@
-teacher salary,3000
-maintenance costs,2000
-others,1000
