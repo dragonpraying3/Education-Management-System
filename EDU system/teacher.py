@@ -1,3 +1,5 @@
+from datetime import datetime
+
 # open file functions
 def open_teacher():
     teachers = []  # List to store teacher records
@@ -22,36 +24,40 @@ def open_teacher():
 
 
 def open_course():
-    courses = []  # List to store course records
+    courses = []  # create an empty list to store student data
     try:
-        with open("course.txt", "r") as f:
-            for line in f:
-                parts = line.rstrip().split(",")  # Split line by comma
-                if len(parts) < 7:
-                    print("Warning: Incomplete course record found and skipped.")  # Skip invalid record
-                    continue
+        with open("course.txt", 'r') as course_File:
+            for line in course_File:
+                line = line.rstrip().split(",")  # split each line become a list and remove whitespace
+                while len(line) < 9:
+                    line.append("")
+                # store each list in a dictionary
                 course = {
-                    "Course ID": parts[0].strip().upper(),  # Course ID in uppercase
-                    "Course Name": parts[1].strip().upper(),  # Course Name in uppercase
-                    "Teacher ID": parts[2].strip(),  # Teacher ID
-                    "Instructor": parts[3].strip(),  # Instructor
-                    "Assignment": parts[4].strip(),  # Assignment details
-                    "Lecture Notes": parts[5].strip(),  # Lecture Notes
-                    "Lesson Plan": parts[6].strip()  # Lesson Plan
+                    "Course ID": line[0],
+                    "Course Name": line[1],
+                    "Teacher ID": line[2],
+                    "Instructor": line[3],
+                    "Assignment": line[4],
+                    "Lecture Notes": line[5],
+                    "Announcement": line[6],
+                    "Lesson Plan": line[7]
                 }
-                courses.append(course)
-        return courses  # Return list of courses
+                courses.append(course)  # add student dictionary to the list
+        return courses
     except FileNotFoundError:
-        print("Warning: course.txt not found.")
+        print("Warning : course.txt not found.")
         return None
 
 
 def save_course(courses):
+    """
+    Save course data to course.txt using the following fields:
+    Course ID, Teacher ID, Course Name, Instructor, Assignment, Lecture Notes, Lesson Plan
+    """
     with open("course.txt", "w") as f:
         for course in courses:
-            # Write each course record as comma-separated values
             f.write(f"{course['Course ID']},{course['Course Name']},{course['Teacher ID']},"
-                    f"{course['Instructor']},{course['Assignment']},{course['Lecture Notes']},"
+                    f"{course['Instructor']},{course['Assignment']},{course['Lecture Notes']},{course['Announcement']},"
                     f"{course['Lesson Plan']}\n")
 
 
@@ -214,7 +220,6 @@ def recalc_total_attendance(record):
 
 
 # function 1: Course Management Functions
-
 def teacher_create_course():
     courses = open_course()
     if not courses:
@@ -269,9 +274,10 @@ def teacher_create_course():
     course_name = input("Please enter Course Name: ").strip()
     assignment = input("Please enter Assignment information: ").strip()
     lecture_notes = input("Please enter Lecture Notes: ").strip()
+    announcement = input("Please enter Announcement: ").strip()
     lesson_plan = input("Please enter Lesson Plan: ").strip()
 
-    if not (course_id and course_name and assignment and lecture_notes and lesson_plan):
+    if not (course_id and course_name and assignment and lecture_notes and announcement and lesson_plan):
         print("Error: All fields are required. Please try again.")
         return
 
@@ -282,6 +288,7 @@ def teacher_create_course():
         "Instructor": teacher_courses[0]["Instructor"],
         "Assignment": assignment,
         "Lecture Notes": lecture_notes,
+        "Announcement": announcement,
         "Lesson Plan": lesson_plan
     }
 
@@ -289,7 +296,7 @@ def teacher_create_course():
     # Append new course to list
     courses.append(new_course)
 
-    # *Writing to file directly inside the function*
+    # Writing to file directly inside the function
     try:
         with open("course.txt", "w") as file:
             for course in courses:
@@ -300,12 +307,13 @@ def teacher_create_course():
                     course["Instructor"],
                     course["Assignment"],
                     course["Lecture Notes"],
+                    course["Announcement"],
                     course["Lesson Plan"]
                 ]) + "\n")  # Ensure only one newline per course
     except FileNotFoundError:
         print("Warning: course.txt not found.")
 
-    # *Displaying updated courses*
+    # Displaying updated courses
     print("\n--------------------------------------------------")
     print("Course created successfully! Current courses:")
     index = 1
@@ -350,6 +358,7 @@ def update_course():
         print(f"Instructor:      {course_found['Instructor']}")
         print(f"Assignment:      {course_found['Assignment']}")
         print(f"Lecture Notes:   {course_found['Lecture Notes']}")
+        print(f"Announcement:   {course_found['Announcement']}")
         print(f"Lesson Plan:     {course_found['Lesson Plan']}")
         print("--------------------------------------")
         input("Press Enter to continue...")  # Pause for user review
@@ -359,8 +368,9 @@ def update_course():
         print("1. Instructor")
         print("2. Assignment")
         print("3. Lecture Notes")
-        print("4. Lesson Plan")
-        print("5. Return to main menu")
+        print("4. Announcement")
+        print("5. Lesson Plan")
+        print("6. Return to main menu")
 
         try:
             choice = int(input("Please enter your choice (1-5): "))
@@ -384,11 +394,16 @@ def update_course():
             save_course(courses)
             print("Lecture Notes updated successfully!\n")
         elif choice == 4:
+            print(f"Old Announcement: {course_found['Announcement']}")
+            course_found['Announcement'] = input("New Announcement: ").strip()
+            save_course(courses)
+            print("Announcement updated successfully!\n")
+        elif choice == 5:
             print(f"Old Lesson Plan: {course_found['Lesson Plan']}")
             course_found['Lesson Plan'] = input("New Lesson Plan: ").strip()
             save_course(courses)
             print("Lesson Plan updated successfully!\n")
-        elif choice == 5:
+        elif choice == 6:
             print("Returning to main menu.\n")
             break
         else:
@@ -410,6 +425,7 @@ def view_course(courses):
                 print(f"   Instructor:     {course['Instructor']}")
                 print(f"   Assignment:     {course['Assignment']}")
                 print(f"   Lecture Notes:  {course['Lecture Notes']}")
+                print(f"   Announcement:  {course['Announcement']}")
                 print(f"   Lesson Plan:    {course['Lesson Plan']}")
                 print("--------------------------------------------------")
                 counter += 1
@@ -462,8 +478,18 @@ def schedule():
     # Prompt the user to enter the new available time
     new_time = input("Please enter the new Available Time: ").strip()
     if new_time:
-        selected_record["Available time"] = new_time
-        print("Available Time updated successfully!")
+        try:
+            start_time, end_time = new_time.split("-")
+            datetime.strptime(start_time, "%H:%M")
+            datetime.strptime(end_time, "%H:%M")
+
+            # Update only if time format is valid
+            selected_record["Available time"] = new_time
+            print("Available Time updated successfully!")
+
+        except (ValueError, IndexError):
+            print("Invalid time slot format! Please use HH:MM-HH:MM format. (e.g. 12:00-14:00)")
+
     else:
         print("No new Available Time was entered.")
 

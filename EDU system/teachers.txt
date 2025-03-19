@@ -2,7 +2,7 @@ T001,Monday,Mr Namazee,08:30-14:00
 T001,Tuesday,Mr Namazee,08:30-12:00
 T001,Wednesday,Mr Namazee,08:30-16:00
 T001,Thursday,Mr Namazee,08:30-17:00
-T001,Friday,Mr Namazee,12:00-16:00
+T001,Friday,Mr Namazee,13:00-17:00
 T002,Monday,Mr Siwa,12:00-14:00
 T002,Tuesday,Mr Siwa,12:00-16:00
 T002,Wednesday,Mr Siwa,08:00-14:00
