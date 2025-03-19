@@ -327,6 +327,9 @@ def enrol_in_course():
         print("student ID founded")
 
         course_id = input("Enter the Course ID you want to enrol in: ").upper()
+        if course_id == '':
+            print("course id cannot be blank")
+            return
         course_found = None
         for course in courses:
             if course["Course ID"] == course_id:
@@ -586,10 +589,14 @@ def submit_feedback():
             break  # stop when found student id
 
     if student_found:
-        name = input("Enter your name: ").strip().title()
-        msg = input("Enter your feedback message: ").strip()
+        name = input("Enter your name: ").title()
+        msg = input("Enter your feedback message: ")
         role = "Student"  # keep the role to student
-
+        
+        if name == '' or msg == '':
+            print("Name or message cannot be blank")
+            return
+            
         # new submission dictionary
         new_submission = {
             "Name": name,
@@ -608,34 +615,37 @@ def submit_feedback():
         input("Student ID not found, make sure enter correct student ID.")
 
 def login_student_menu():
-    print("")
-    title = "Student Login Menu"
-    width = 40
-    print("=" * width)
-    print(title.center(width))
-    print("=" * width)
-    print("1. Create account")
-    print("2. Login account")
-    print("3. Exit")
+    while True:
+        print("")
+        title = "Student Login Menu"
+        width = 40
+        print("=" * width)
+        print(title.center(width))
+        print("=" * width)
+        print("1. Create account")
+        print("2. Login account")
+        print("3. Exit")
 
-    try:
-        opt = int(input("\nYour choice: "))
+        try:
+            opt = int(input("\nYour choice: "))
 
-        if opt == 1:
-            create_student_acc()
-        elif opt == 2:
-            login_student_acc()
-        elif opt == 3:
-            return
-    except ValueError:
-        print("Invalid input! Only integer between 1-3 is allowed.")
+            if opt == 1:
+                create_student_acc()
+            elif opt == 2:
+                login_student_acc()
+            elif opt == 3:
+                break
+        except ValueError:
+            print("Invalid input! Only integer between 1-3 is allowed.")
 
 
 def create_student_acc():
     new_user = input("Please enter your new username: ").upper()
     new_pass = input("Please enter your password: ")
     role = "Student"
-
+    if new_user == '' or new_pass == '':
+        print("username or password cant be blank")
+        return
     accounts = open_accounts()
     if accounts is None:
         return
