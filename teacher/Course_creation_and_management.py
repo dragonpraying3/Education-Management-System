@@ -24,32 +24,29 @@ def open_teacher():
         return None  # Return an empty list if file not found
 
 def open_course():
-    """
-    Load course data from course.txt.
-    Each line: Course ID, Teacher ID, Course Name, Instructor, Assignment, Lecture Notes, Lesson Plan
-    """
-    courses = []
+    courses = []  # create an empty list to store student data
     try:
-        with open("course.txt", "r") as f:
-            for line in f:
-                parts = line.rstrip().split(",")
-                if len(parts) < 7:
-                    print("Warning: Incomplete course record found and skipped.")
-                    continue
+        with open("course.txt", 'r') as course_File:
+            for line in course_File:
+                line = line.rstrip().split(",")  # split each line become a list and remove whitespace
+                while len(line) < 9:
+                    line.append("")
+                # store each list in a dictionary
                 course = {
-                    "Course ID": parts[0].strip().upper(),
-                    "Course Name": parts[1].strip().upper(),
-                    "Teacher ID": parts[2].strip(),
-                    "Instructor": parts[3].strip(),
-                    "Assignment": parts[4].strip(),
-                    "Lecture Notes": parts[5].strip(),
-                    "Lesson Plan": parts[6].strip()
+                    "Course ID": line[0],
+                    "Course Name": line[1],
+                    "Teacher ID": line[2],
+                    "Instructor": line[3],
+                    "Assignment": line[4],
+                    "Lecture Notes": line[5],
+                    "Announcement": line[6],
+                    "Lesson Plan": line[7]
                 }
-                courses.append(course)
+                courses.append(course)  # add student dictionary to the list
         return courses
     except FileNotFoundError:
-        print("Warning: course.txt not found.")
-        return None  # Return an empty list if file not found
+        print("Warning : course.txt not found.")
+        return None
 
 def save_course(courses):
     """
@@ -59,43 +56,64 @@ def save_course(courses):
     with open("course.txt", "w") as f:
         for course in courses:
             f.write(f"{course['Course ID']},{course['Course Name']},{course['Teacher ID']},"
-                    f"{course['Instructor']},{course['Assignment']},{course['Lecture Notes']},"
+                    f"{course['Instructor']},{course['Assignment']},{course['Lecture Notes']},{course['Announcement']}"
                     f"{course['Lesson Plan']}\n")
 
 def teacher_create_course():
-    """
-    Allows a teacher to create a course.
-    1. Enter Teacher ID to verify; if the teacher record exists, continue; otherwise exit.
-    2. Enter a new Course ID (and check for duplicates), Course Name, Assignment, Lecture Notes, and Lesson Plan.
-       The Instructor field is automatically taken from the teacher record, and Teacher ID is recorded.
-    3. Save the new course record to course.txt and print all current course information.
-    """
-    teacher_id = input("Please enter Teacher ID: ").strip().upper()
-    teachers = open_teacher()
-    if teachers is None:
+    courses = open_course()
+    if not courses:
         return
-    teacher_found = None
-    for t in teachers:
-        if t["Teacher ID"] == teacher_id:
-            teacher_found = t
-            break
-    if not teacher_found:
+
+    teacher_id = input("Please enter Teacher ID: ").strip().upper()
+
+    # Find courses taught by the teacher
+    teacher_courses = []
+    for course in courses:
+        if course["Teacher ID"] == teacher_id:
+            teacher_courses.append(course)
+
+    if not teacher_courses:
         print("Teacher ID does not exist; cannot create course.")
         return
 
-    print("Teacher verified. Welcome,", teacher_found["Instructor"])
+    # Show teacher's current courses
+    print("\nTeacher verified. Welcome,", teacher_courses[0]["Instructor"])
+    print("Current courses assigned to this teacher:")
+    index = 1
+    for course in teacher_courses:
+        print(f"{index}. Course ID: {course['Course ID']}\n   Course Name: {course['Course Name']} \n")
+        index += 1
 
-    courses = open_course()
-    if courses is None:
-        return
-    course_id = input("Please enter new Course ID: ").strip().upper()
-    if any(c["Course ID"] == course_id for c in courses):
-        print("Error: Course ID already exists. Please try again.")
+        # Let the teacher select a course
+    try:
+        choice = int(input("\nSelect a course by entering its index: "))
+        if choice < 1 or choice > len(teacher_courses):
+            print("Invalid choice. Please select a valid course index.")
+            return
+    except ValueError:
+        print("Invalid input. Please enter a number.")
         return
 
+    selected_course = teacher_courses[choice - 1]
+    if selected_course["Course ID"].strip() and selected_course["Course Name"].strip():
+        print("Error: The selected course is already assigned. You cannot create a new course here.")
+        return
+
+    print(f"\nYou selected an empty course slot.")
+
+    course_id = input("\nPlease enter new Course ID: ").strip().upper()
+
+ # Check if course ID already exists
+    for course in courses:
+        if course["Course ID"] == course_id:
+            print("Error: Course ID already exists. Please try again.")
+            return
+
+    # Get course details from input
     course_name = input("Please enter Course Name: ").strip()
     assignment = input("Please enter Assignment information: ").strip()
     lecture_notes = input("Please enter Lecture Notes: ").strip()
+    announcement = input("Please enter Announcement: ").strip()
     lesson_plan = input("Please enter Lesson Plan: ").strip()
 
     if not (course_id and course_name and assignment and lecture_notes and lesson_plan):
@@ -104,34 +122,59 @@ def teacher_create_course():
 
     new_course = {
         "Course ID": course_id,
-        "Course Name": course_id,
+        "Course Name": course_name,
         "Teacher ID": teacher_id,
-        "Instructor": teacher_found["Instructor"],
+        "Instructor": teacher_courses[0]["Instructor"],
         "Assignment": assignment,
         "Lecture Notes": lecture_notes,
+        "Announcement": announcement,
         "Lesson Plan": lesson_plan
     }
+
+    courses = [course for course in courses if course["Course ID"].strip()]
+    # Append new course to list
     courses.append(new_course)
-    save_course(courses)
-    print("--------------------------------------------------")
+
+    # *Writing to file directly inside the function*
+    try:
+        with open("course.txt", "w") as file:
+            for course in courses:
+                file.write(",".join([
+                    course["Course ID"],
+                    course["Course Name"],
+                    course["Teacher ID"],
+                    course["Instructor"],
+                    course["Assignment"],
+                    course["Lecture Notes"],
+                    course["Announcement"],
+                    course["Lesson Plan"]
+                ]) + "\n")  # Ensure only one newline per course
+    except FileNotFoundError:
+        print("Warning: course.txt not found.")
+
+    # *Displaying updated courses*
+    print("\n--------------------------------------------------")
     print("Course created successfully! Current courses:")
-    print(f"1. Course ID: {new_course['Course ID']}")
-    print(f"   Course Name:    {new_course['Course Name']}")
-    print(f"   Teacher ID:   {new_course['Teacher ID']}")
-    print(f"   Instructor:    {new_course['Instructor']}")
-    print(f"   Assignment:    {new_course['Assignment']}")
-    print(f"   Lecture Notes: {new_course['Lecture Notes']}")
-    print(f"   Lesson Plan:   {new_course['Lesson Plan']}")
+    index = 1
+    for course in teacher_courses + [new_course]:
+        if course["Course ID"].strip():
+            print(f"{index}. Course ID: {course['Course ID']}, Course Name: {course['Course Name']}")
+            index += 1
     print("--------------------------------------------------")
 
+
 def update_course():
-    """
-    Update an existing course's Instructor, Assignment, Lecture Notes, or Lesson Plan.
-    """
-    course_id = input("\nPlease enter the Course ID to update: ").strip().upper()
     courses = open_course()
     if courses is None:
         return
+
+    while True:
+        course_id = input("\nPlease enter the Course ID to update: ").strip().upper()
+        if course_id:
+            break
+        else:
+            print("Error: Course ID cannot be empty. Please enter a valid Course ID.")
+            return
 
     course_found = None
     for course in courses:
@@ -143,26 +186,30 @@ def update_course():
         print("Course not found. Returning to menu.")
         return
 
+    # Loop to allow multiple updates until user decides to exit
     while True:
         print("\n--------------------------------------")
         print("--------- Current Course Info --------")
         print("--------------------------------------")
-        print(f"Course ID:       {course_found['Course ID']}")
-        print(f"Course Name:      {course_found['Course Name']}")
-        print(f"Teacher ID:     {course_found['Teacher ID']}")
+        print(f"Course ID:       {course_found['Course ID']}")  # Display current course info
+        print(f"Course Name:     {course_found['Course Name']}")
+        print(f"Teacher ID:      {course_found['Teacher ID']}")
         print(f"Instructor:      {course_found['Instructor']}")
         print(f"Assignment:      {course_found['Assignment']}")
         print(f"Lecture Notes:   {course_found['Lecture Notes']}")
+        print(f"Announcement:   {course_found['Announcement']}")
         print(f"Lesson Plan:     {course_found['Lesson Plan']}")
         print("--------------------------------------")
-        input("Press Enter to continue...")
+        input("Press Enter to continue...")  # Pause for user review
 
+        # Let user choose field to update
         print("\nSelect the field to update:")
         print("1. Instructor")
         print("2. Assignment")
         print("3. Lecture Notes")
-        print("4. Lesson Plan")
-        print("5. Return to main menu")
+        print("4. Announcement")
+        print("5. Lesson Plan")
+        print("6. Return to main menu")
 
         try:
             choice = int(input("Please enter your choice (1-5): "))
@@ -171,8 +218,8 @@ def update_course():
             continue
 
         if choice == 1:
-            print(f"Old Instructor: {course_found['Instructor']}")
-            course_found['Instructor'] = input("New Instructor: ").strip()
+            print(f"Old Instructor: {course_found['Instructor']}")  # Show old value
+            course_found['Instructor'] = input("New Instructor: ").strip()  # Update field
             save_course(courses)
             print("Instructor updated successfully!\n")
         elif choice == 2:
@@ -186,69 +233,130 @@ def update_course():
             save_course(courses)
             print("Lecture Notes updated successfully!\n")
         elif choice == 4:
+            print(f"Old Announcement: {course_found['Announcement']}")
+            course_found['Announcement'] = input("New Announcement: ").strip()
+            save_course(courses)
+            print("Announcement updated successfully!\n")
+        elif choice == 5:
             print(f"Old Lesson Plan: {course_found['Lesson Plan']}")
             course_found['Lesson Plan'] = input("New Lesson Plan: ").strip()
             save_course(courses)
             print("Lesson Plan updated successfully!\n")
-        elif choice == 5:
+        elif choice == 6:
             print("Returning to main menu.\n")
             break
         else:
-            print("Invalid choice, please enter a number between 1 and 5.")
+            print("Invalid choice, please enter a number between 1 and 6.")
+
 
 def view_course(courses):
-    """Print all course records."""
     print("\n=== Course List ===")
     if not courses:
         print("No course records available.")
     else:
         counter = 1
         for course in courses:
+            # Print each course record in a formatted manner
             print(f"{counter}. Course ID: {course['Course ID']}")
             print(f"   Course Name:    {course['Course Name']}")
-            print(f"   Teacher ID:   {course['Teacher ID']}")
-            print(f"   Instructor:    {course['Instructor']}")
-            print(f"   Assignment:    {course['Assignment']}")
-            print(f"   Lecture Notes: {course['Lecture Notes']}")
-            print(f"   Lesson Plan:   {course['Lesson Plan']}")
+            print(f"   Teacher ID:     {course['Teacher ID']}")
+            print(f"   Instructor:     {course['Instructor']}")
+            print(f"   Assignment:     {course['Assignment']}")
+            print(f"   Lecture Notes:  {course['Lecture Notes']}")
+            print(f"   Announcement:  {course['Announcement']}")
+            print(f"   Lesson Plan:    {course['Lesson Plan']}")
             print("--------------------------------------------------")
             counter += 1
 
+
 def schedule():
-    """Let the user choose a teacher record and update its Available Time."""
     teachers = open_teacher()
     if teachers is None:
+        return  # If the teacher file cannot be read, exit immediately
+
+    # Prompt the user for the Teacher ID
+    teacher_id_input = input("Please enter the Teacher ID to update the available time: ").strip().upper()
+    if not teacher_id_input:
+        print("Error: Teacher ID cannot be empty. Returning to course management menu.")
         return
 
-    print("\n--- Teacher Records ---")
-    counter = 1
-    for teacher in teachers:
-        print(f"{counter}. Teacher ID: {teacher['Teacher ID']} - Instructor: {teacher['Instructor']} - Available Time: {teacher['Available time']}")
-        counter += 1
+    # Find all teacher records that match the entered Teacher ID
+    matching_records = []
+    for t in teachers:
+        if t["Teacher ID"] == teacher_id_input:
+            matching_records.append(t)
 
-    try:
-        choice = int(input("Select the teacher (by number) to update Available Time: "))
-    except ValueError:
-        print("Invalid input. Please enter a number.")
+    if not matching_records:
+        print("Teacher ID not found. Returning to course management menu.")
         return
 
-    if choice < 1 or choice > len(teachers):
-        print("Invalid selection, number out of range.")
+    # Display all matching records (without using enumerate)
+    print("\n====================================================")
+    print(f"   The following records were found for Teacher ID = {teacher_id_input}:")
+    print("====================================================\n")
+    i = 1
+    print("\n====================================================")
+    for record in matching_records:
+        print(f"{i}. Day: {record['Day']} - Instructor: {record['Instructor']} - Available Time: {record['Available time']}")
+        i += 1
+    print("====================================================\n")
+    # Ask the user to select which record to update
+    while True:
+        try:
+            choice = int(input("Please select a record number to update: "))
+            if 1 <= choice <= len(matching_records):
+                break
+            else:
+                print(f"Invalid selection. Please enter a number between 1 and {len(matching_records)}.")
+        except ValueError:
+            print("Invalid input. Please enter a valid integer.")
+
+    selected_record = matching_records[choice - 1]
+    new_time = input("Please enter the new Available Time (e.g., 8.00-9.00): ").strip()
+
+    if not new_time:
+        print("No new Available Time was entered.")
         return
 
-    selected_teacher = teachers[choice - 1]
-    new_time = input("Enter new Available Time: ").strip()
-    if new_time:
-        selected_teacher["Available time"] = new_time
-        print("Available Time updated successfully!")
-        with open("teachers.txt", "w") as f:
-            for teacher in teachers:
-                f.write(f"{teacher['Teacher ID']},{teacher['Day']},{teacher['Instructor']},{teacher['Available time']}\n")
-    else:
-        print("No new Available Time entered.")
+    # Check if the '-' character is present
+    if "-" not in new_time:
+        print("Invalid format. Available Time must be in format like 8.00-9.00. Exiting update.")
+        return
+
+    parts = new_time.split("-")
+    if len(parts) != 2:
+        print("Invalid format. Available Time must be in format like 8.00-9.00. Exiting update.")
+        return
+
+    start_time, end_time = parts[0], parts[1]
+
+    # Helper function to check if a time string is in the correct format (e.g., "8.00")
+    def valid_time_format(time_str):
+        # The time string must contain a '.' and split into two parts
+        if "." not in time_str:
+            return False
+        subparts = time_str.split(".")
+        if len(subparts) != 2:
+            return False
+        hour, minute = subparts[0], subparts[1]
+        # Both hour and minute should be numeric
+        if not hour.isdigit() or not minute.isdigit():
+            return False
+        # The minute part should consist of exactly two digits
+        if len(minute) != 2:
+            return False
+        return True
+
+    if not valid_time_format(start_time) or not valid_time_format(end_time):
+        print("Invalid format. Available Time must be in format like 8.00-9.00. Exiting update.")
+        return
+
+    selected_record["Available time"] = new_time
+    print("Available Time updated successfully!")
+
 
 def course_creation_and_management_menu():
-    """Main menu for course creation and management."""
+    # Main menu for course management functions
     while True:
         courses = open_course()
         print("\n------------------------------------------------------")
@@ -268,13 +376,13 @@ def course_creation_and_management_menu():
             continue
 
         if opt == 1:
-            teacher_create_course()
+            teacher_create_course()  # Create new course
         elif opt == 2:
-            update_course()
+            update_course()  # Update existing course
         elif opt == 3:
-            view_course(courses)
+            view_course(courses)  # View all courses
         elif opt == 4:
-            schedule()
+            schedule()  # Update teacher schedule
         elif opt == 5:
             print("Exiting course management menu.")
             break
@@ -282,4 +390,4 @@ def course_creation_and_management_menu():
             print("Invalid selection, please enter a number between 1 and 5.")
 
 # Run the main menu
-# course_management_menu()
+course_creation_and_management_menu()
