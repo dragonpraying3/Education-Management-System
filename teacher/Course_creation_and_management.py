@@ -297,9 +297,11 @@ def schedule():
     i = 1
     print("\n====================================================")
     for record in matching_records:
-        print(f"{i}. Day: {record['Day']} - Instructor: {record['Instructor']} - Available Time: {record['Available time']}")
+        print(
+            f"{i}. Day: {record['Day']} - Instructor: {record['Instructor']} - Available Time: {record['Available time']}")
         i += 1
     print("====================================================\n")
+
     # Ask the user to select which record to update
     while True:
         try:
@@ -311,48 +313,62 @@ def schedule():
         except ValueError:
             print("Invalid input. Please enter a valid integer.")
 
+    # Retrieve the chosen record
     selected_record = matching_records[choice - 1]
-    new_time = input("Please enter the new Available Time (e.g., 8.00-9.00): ").strip()
 
+    # Prompt the user to enter the new available time
+    # We expect a format like: HH:MM-HH:MM (e.g., 12:00-14:00)
+    new_time = input("Please enter the new Available Time (HH:MM-HH:MM): ").strip()
     if not new_time:
         print("No new Available Time was entered.")
         return
 
-    # Check if the '-' character is present
+    # Check if the input contains exactly one '-'
     if "-" not in new_time:
-        print("Invalid format. Available Time must be in format like 8.00-9.00. Exiting update.")
+        print("Invalid time slot format! Please use HH:MM-HH:MM format. (e.g. 12:00-14:00)")
         return
 
-    parts = new_time.split("-")
-    if len(parts) != 2:
-        print("Invalid format. Available Time must be in format like 8.00-9.00. Exiting update.")
-        return
+    # Split into start_time and end_time
+    start_time_str, end_time_str = new_time.split("-", 1)
 
-    start_time, end_time = parts[0], parts[1]
+    # Helper function to check HH:MM format manually
+    def is_valid_hhmm_format(time_str):
+        # Must contain a colon
+        if ":" not in time_str:
+            return False
+        parts = time_str.split(":")
+        if len(parts) != 2:
+            return False
 
-    # Helper function to check if a time string is in the correct format (e.g., "8.00")
-    def valid_time_format(time_str):
-        # The time string must contain a '.' and split into two parts
-        if "." not in time_str:
+        hour_str, minute_str = parts[0], parts[1]
+        # Check that hour and minute are digits
+        if not (hour_str.isdigit() and minute_str.isdigit()):
             return False
-        subparts = time_str.split(".")
-        if len(subparts) != 2:
+
+        hour = int(hour_str)
+        minute = int(minute_str)
+
+        # Hour must be 0–23, minute must be 0–59
+        if not (0 <= hour <= 23):
             return False
-        hour, minute = subparts[0], subparts[1]
-        # Both hour and minute should be numeric
-        if not hour.isdigit() or not minute.isdigit():
+        if not (0 <= minute <= 59):
             return False
-        # The minute part should consist of exactly two digits
-        if len(minute) != 2:
-            return False
+
         return True
 
-    if not valid_time_format(start_time) or not valid_time_format(end_time):
-        print("Invalid format. Available Time must be in format like 8.00-9.00. Exiting update.")
+    # Validate both start_time and end_time
+    if not (is_valid_hhmm_format(start_time_str) and is_valid_hhmm_format(end_time_str)):
+        print("Invalid time slot format! Please use HH:MM-HH:MM format. (e.g. 12:00-14:00)")
         return
 
+    # If everything is valid, update the record
     selected_record["Available time"] = new_time
     print("Available Time updated successfully!")
+
+    # Write the updated teacher records back to teachers.txt
+    with open("teachers.txt", "w") as f:
+        for t in teachers:
+            f.write(f"{t['Teacher ID']},{t['Day']},{t['Instructor']},{t['Available time']}\n")
 
 
 def course_creation_and_management_menu():
