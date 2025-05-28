@@ -2,11 +2,11 @@ from datetime import datetime
 
 def convert_time(time): #convert time format for easy comparison
     return datetime.strptime(time,'%H:%M')
-
+SCHEDULE_PATH=r"C:\Users\User\PycharmProjects\Assignment\git\chloride33-\assets\schedule.txt"
 def open_timetable():
     schedule=[]
     try:
-        with open("assets/schedule.txt",'r')as hFile:
+        with open(SCHEDULE_PATH,'r')as hFile:
             for row in hFile:
                 row=row.rstrip().split(",")
                 item={
@@ -24,7 +24,7 @@ def open_timetable():
 def open_teacher():
     teachers=[]
     try:
-        with open("teachers.txt",'r')as instructor:
+        with open("assets/teachers.txt",'r')as instructor:
             for column in instructor:
                 column=column.rstrip().split(",")
                 item={
@@ -43,7 +43,7 @@ def update_timetable():
     print()
     print("-"*60,"Current Timetable","-"*60)
     index=1
-    with open("schedule.txt",'w')as hFile:
+    with open("./assets/schedule.txt",'w')as hFile:
         for item in schedule:
             hFile.write(",".join(item.values())+"\n")
             print(f"{index}. Course ID:{item['Course ID']}\t\tDay:{item['Day']}\t\tTime Slot:{item['Time Slot']}\t\tInstructor:{item['Instructor']}\t\tVenue:{item['Venue']}")
@@ -54,7 +54,7 @@ def update_teachers():
     teachers=open_teacher()
     print()
     print("-" * 40, "Instructors Official Hours", "-" * 40)
-    with open("teachers.txt", 'w') as instructor:
+    with open("assets/teachers.txt", 'w') as instructor:
         for item in teachers:
             instructor.write(",".join(item.values()) + "\n")
             print(f"Course ID:{item['Course ID']}\t\tDay:{item['Day']}\t\tInstructor:{item['Instructor']}\t\tOffice Hours:{item['Office Hours']}")
@@ -80,7 +80,7 @@ def edit_schedule():
                         scheduling=input("Enter the time slot of the class schedule in 24 hours method (eg. 12.00-14.00):")
                         schedule[real_bil]['Time Slot']=scheduling
 
-                        with open("schedule.txt", 'w') as hFile:
+                        with open("./assets/schedule.txt", 'w') as hFile:
                             for item in schedule:  # write the entire schedule back to the schedule.txt
                                 hFile.write(",".join(item.values()) + "\n")
 
@@ -112,7 +112,7 @@ def edit_schedule():
                                 print("Reschedule successful!")
 
 
-                                with open("schedule.txt", 'w') as hFile:
+                                with open("./assets/schedule.txt", 'w') as hFile:
                                     for item in schedule:  # write the entire schedule back to the schedule.txt
                                         hFile.write(",".join(item.values()) + "\n")
                                 update_timetable()
