@@ -2,34 +2,39 @@ import random
 
 def open_students():
     students=[] #create an empty list to store student data
-    with open("students.txt", 'r') as tFile:
-        for line in tFile:
-            line=line.rstrip().split(",") #split each line become a list and remove whitespace
-            #set the limit of the append block inside the list
-            while len(line)<9:
-                line.append("")
-            #store each list in a dictionary
-            student = {
-                "Student ID": line[0],
-                "Name": line[1],
-                "Email": line[2],
-                "Contact": line[3],
-                "Emergency Contact": line[4],
-                "Gender":line[5],
-                "Student Status":line[6],
-                "Tuition Fees":line[7],
-                "Payment":line[8]
-            }
-            students.append(student) #add student dictionary to the list
-    return students #return the list containing student dictionary
+    try:
+        with open("students.txt", 'r') as tFile:
+            for line in tFile:
+                line=line.rstrip().split(",") #split each line become a list and remove whitespace
+                #set the limit of the append block inside the list
+                #leave empty column when the data input is always less than 9
+                while len(line)<9:
+                    line.append("")
+                #store each list in a dictionary
+                student = {
+                    "Student ID": line[0],
+                    "Name": line[1],
+                    "Email": line[2],
+                    "Contact": line[3],
+                    "Emergency Contact": line[4],
+                    "Gender":line[5],
+                    "Student Status":line[6],
+                    "Tuition Fees":line[7],
+                    "Payment":line[8]
+                }
+                students.append(student) #add student dictionary to the list
+            return students # return the list containing student dictionary
+    except FileNotFoundError:
+        print("Warning: 'students.txt' not found. Returning to main menu..")
+    return None
 
 def update_student_status(pupil_id,new_status):
     students=open_students() #read students list from students.txt
     update=False #check if the update is success
 
     for student in students:
-        if student['Student ID']==pupil_id:
-            student['Student Status']=new_status
+        if student['Student ID']==pupil_id: #if student id is found
+            student['Student Status']=new_status #change the student status to new_status
             update=True #set the update status is true as update success
             break
 
@@ -42,35 +47,39 @@ def update_student_status(pupil_id,new_status):
                 tFile.write(",".join(student.values()) + "\n")
                 print(f"Student ID:{student['Student ID']}\t\tStudent Name:{student['Name']}\t\tContact:{student['Contact']}\t\tGender:{student['Gender']}\t\tStudent status:{student['Student Status']}")
     else:
-        print("Something wrong")
+        print("Updating issue occur")
 
 def generate_id():
     students = open_students()
     while True:
-        student_id = f"TP{random.randint(1, 99):02d}{random.randint(1, 99):02d}{random.randint(1, 99):02d}"
+        student_id = f"TP{random.randint(1, 99):02d}{random.randint(1, 99):02d}{random.randint(1, 99):02d}" #generate random student ID
         if student_id not in students:
             return student_id
 
 def register_student():
+    students = open_students()  # Ensure the file exists before registration
+    if students is None:  # If the file was missing, stop execution
+        return
+
     while True:
         try:
             name = str(input("Please enter the student's name:")).title()
             while True:
                 contact = input("Please enter the student's contact:")
-                if contact.isdigit(): #valid the input is digit
+                if contact.isdigit(): #valid the input is all digit
                     break
                 print("Invalid input. Please enter integer only!")
 
             while True:
                 try:
                     gender = str(input("Please enter the student's gender(Male/Female):")).capitalize()
-                    if gender not in ["Male", "Female"]:
+                    if gender not in ["Male", "Female"]: #valid the input only male and female
                         raise ValueError("Invalid input. Please enter Male or Female only.")
                     break
                 except ValueError as e:
                     print(e)
 
-            student_status="Active"
+            student_status="Active" #automatic register new student as 'Active' status
             register_id = generate_id()
             #leave empty space to update by other role
             email=" "
@@ -123,6 +132,9 @@ def action(pupil_id):
 
 def select_student():
     students = open_students()
+    if students is None:  # If the file was missing, stop execution
+        return
+
     # print a current student list for view
     print("Here is the current student list:\n")
     for student in students:

@@ -1,20 +1,27 @@
 def open_mailbox():
     mailbox=[] #create an empty list to store data
-    with open("mail.txt", 'r')as message:
-        for line in message:
-            line=line.rstrip().split(',') #remove whitespace and split each line become a list
-            #store each student list in a dictionary
-            detail={
-                'Name':line[0],
-                'Role':line[1],
-                'Message':line[2],
-                'Reply':line[3]if len(line) > 3 else ""  #add reply column if having reply message else empty
-            }
-            mailbox.append(detail) #add dictionary into mailbox list
-    return mailbox #return list containing dictionary into mailbox
+    try:
+        with open("mail.txt", 'r')as message:
+            for line in message:
+                line=line.rstrip().split(',') #remove whitespace and split each line become a list
+                #store each student list in a dictionary
+                detail={
+                    'Name':line[0],
+                    'Role':line[1],
+                    'Message':line[2],
+                    'Reply':line[3]if len(line) > 3 else ""  #add reply column if having reply message else empty
+                }
+                mailbox.append(detail) #add dictionary into mailbox list
+        return mailbox #return list containing dictionary into mailbox
+    except FileNotFoundError:
+        print("Error: mail.txt not found.")
+    return None #return None if no existing file
 
 def update_mailbox():
     mailboxes = open_mailbox()
+    if mailboxes is None:
+        return
+
     with open("mail.txt", 'w') as message:
         print("")
         print("=" * 10, "MAILBOX CONTENT", "=" * 10)
@@ -28,6 +35,8 @@ def update_mailbox():
 
 def reply_mailbox():
     mailboxes = open_mailbox()
+    if mailboxes is None:
+        return
     while True:
         print("")
         print("=" * 10, "ACTION MENU", "=" * 10)
@@ -47,7 +56,7 @@ def reply_mailbox():
                             students = open_students() #call the function
 
                             print("\n========== Student Fee Details ==========")
-                            for student in students:
+                            for student in students: #if parent is entered. print financial report of student
                                 print(f"Student ID:{student['Student ID']}")
                                 print(f"Student Name: {student['Name']}")
                                 print(f"Tuition Fees: {student['Tuition Fees']}")
