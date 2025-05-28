@@ -31,7 +31,7 @@ def update_mailbox():
             print(f"Role:{mail['Role']}")
             print(f"Email:{mail['Message']}")
             print(f"Reply:{mail['Reply']}")
-            print("-" * 40)
+            print("-" * 50)
 
 def reply_mailbox():
     mailboxes = open_mailbox()
